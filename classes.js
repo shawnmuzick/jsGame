@@ -2,7 +2,7 @@ export class Player {
 	constructor(img, spriteX, spriteY, spriteWidth, spriteHeight, cx, cy, cWidth, cHeight) {
 		this.img = img;
 		this.spriteX = spriteX;
-		this.spriteY = spriteY;
+		this.spriteY = spriteY + 10 * spriteHeight;
 		this.width = spriteWidth;
 		this.height = spriteHeight;
 		this.xPosition = cx;
