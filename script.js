@@ -1,4 +1,6 @@
 // skele sprite playground
+import { Player } from './classes.js';
+
 const canvas = document.createElement('canvas');
 const img = new Image();
 
@@ -12,26 +14,26 @@ const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
 document.body.appendChild(canvas);
-
-function drawPlayer(img, sx, sy, swidth, sheight, cx, cy, cwidth = swidth, cheight = sheight) {
-	context.drawImage(img, sx, sy, swidth, sheight, cx, cy, cwidth, cheight);
-}
-
+const player = new Player(img, 0, 0, 64, 64, 0, 0, 200, 200);
 function clear() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-cx = 0;
-cy = 0;
-sx = 0;
-sy = 0;
-swidth = 64;
-sheight = 64;
 function paint() {
 	clear();
-	drawPlayer(img, sx, sheight * 9, swidth, sheight, cx, cy, 200, 200);
-	sx += swidth;
-	if (sx >= swidth * 9) sx = 0;
+	player.draw(context);
 	setTimeout(() => requestAnimationFrame(paint), 100);
 }
 paint();
+
+function keydown(e) {
+	let obj = {
+		ArrowRight: player.right(),
+		ArrowLeft: player.left(),
+		ArrowUp: player.up(),
+		ArrowDown: player.down(),
+	};
+	return obj[e.key]?.();
+}
+
+document.addEventListener('keydown', keydown);
