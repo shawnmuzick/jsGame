@@ -14,15 +14,15 @@ const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
 document.body.appendChild(canvas);
-const player = new Player(img, 0, 0, 64, 64, centerX, centerY, 200, 200);
+const player = new Player(img, 0, 0, 64, 64, centerX, centerY, 200, 200, context);
 function clear() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function paint() {
 	clear();
-	player.draw(context);
-	setTimeout(() => requestAnimationFrame(paint), 50);
+	player.draw();
+	requestAnimationFrame(paint);
 }
 paint();
 
@@ -33,7 +33,7 @@ function keydown(e) {
 		ArrowUp: player.up(),
 		ArrowDown: player.down(),
 	};
-	console.log(player)
+	player.scroll();
 	return obj[e.key]?.();
 }
 

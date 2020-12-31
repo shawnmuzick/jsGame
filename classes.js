@@ -1,5 +1,5 @@
 export class Player {
-	constructor(img, spriteX, spriteY, spriteWidth, spriteHeight, cx, cy, cWidth, cHeight) {
+	constructor(img, spriteX, spriteY, spriteWidth, spriteHeight, cx, cy, cWidth, cHeight, context) {
 		this.img = img;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY + 10 * spriteHeight;
@@ -14,10 +14,11 @@ export class Player {
 		this.animateUp = 8;
 		this.animateDown = 10;
 		this.speed = 3;
+		this.context = context;
 	}
 
-	draw(context) {
-		context.drawImage(
+	draw() {
+		this.context.drawImage(
 			this.img,
 			this.spriteX,
 			this.spriteY,
@@ -28,18 +29,22 @@ export class Player {
 			this.scaleWidth,
 			this.scaleHeight
 		);
+
 	}
 
-	scroll(loopLimit = 9, loopStart = 64) {
+	scroll(loopLimit = 8, loopStart = 0) {
+		if (this.spriteX >= this.width * loopLimit){
+			this.spriteX = loopStart;
+		}
+
 		this.spriteX += this.width;
-		if (this.spriteX >= this.width * loopLimit) this.spriteX = loopStart;
 	}
 
 	left() {
 		return () => {
 			this.spriteY = this.animateLeft * this.height;
 			this.xPosition -= this.speed;
-			this.scroll();
+		this.draw();
 		};
 	}
 
@@ -47,7 +52,7 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateRight * this.height;
 			this.xPosition += this.speed;
-			this.scroll();
+		this.draw();
 		};
 	}
 
@@ -55,7 +60,7 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateUp * this.height;
 			this.yPosition -= this.speed;
-			this.scroll(9, this.height);
+		this.draw();
 		};
 	}
 
@@ -63,7 +68,7 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateDown * this.height;
 			this.yPosition += this.speed;
-			this.scroll(9, this.height);
+		this.draw();
 		};
 	}
 }
