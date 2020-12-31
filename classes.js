@@ -13,7 +13,7 @@ export class Player {
 		this.animateRight = 11;
 		this.animateUp = 8;
 		this.animateDown = 10;
-		this.speed = 5;
+		this.speed = 3;
 	}
 
 	draw(context) {
@@ -30,9 +30,9 @@ export class Player {
 		);
 	}
 
-	scroll() {
+	scroll(loopLimit = 9, loopStart = 64) {
 		this.spriteX += this.width;
-		if (this.spriteX >= this.width * 9) this.spriteX = this.width;
+		if (this.spriteX >= this.width * loopLimit) this.spriteX = loopStart;
 	}
 
 	left() {
@@ -55,7 +55,7 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateUp * this.height;
 			this.yPosition -= this.speed;
-			this.scroll();
+			this.scroll(9, this.height);
 		};
 	}
 
@@ -63,7 +63,7 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateDown * this.height;
 			this.yPosition += this.speed;
-			this.scroll();
+			this.scroll(9, this.height);
 		};
 	}
 }
