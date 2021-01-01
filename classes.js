@@ -1,5 +1,16 @@
 export class Player {
-	constructor(img, spriteX, spriteY, spriteWidth, spriteHeight, cx, cy, cWidth, cHeight, context) {
+	constructor(
+		img,
+		spriteX,
+		spriteY,
+		spriteWidth,
+		spriteHeight,
+		cx,
+		cy,
+		cWidth,
+		cHeight,
+		context
+	) {
 		this.img = img;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY + 10 * spriteHeight;
@@ -29,11 +40,10 @@ export class Player {
 			this.scaleWidth,
 			this.scaleHeight
 		);
-
 	}
 
 	scroll(loopLimit = 8, loopStart = 0) {
-		if (this.spriteX >= this.width * loopLimit){
+		if (this.spriteX >= this.width * loopLimit) {
 			this.spriteX = loopStart;
 		}
 
@@ -44,7 +54,6 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateLeft * this.height;
 			this.xPosition -= this.speed;
-		this.draw();
 		};
 	}
 
@@ -52,7 +61,6 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateRight * this.height;
 			this.xPosition += this.speed;
-		this.draw();
 		};
 	}
 
@@ -60,7 +68,6 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateUp * this.height;
 			this.yPosition -= this.speed;
-		this.draw();
 		};
 	}
 
@@ -68,7 +75,6 @@ export class Player {
 		return () => {
 			this.spriteY = this.animateDown * this.height;
 			this.yPosition += this.speed;
-		this.draw();
 		};
 	}
 }

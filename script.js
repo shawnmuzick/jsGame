@@ -3,6 +3,9 @@ import { Player } from './classes.js';
 
 const canvas = document.createElement('canvas');
 const img = new Image();
+let game = {
+	keydown: false,
+};
 
 img.src = './skeletonSprite.png';
 canvas.classList.add('canvas');
@@ -22,7 +25,10 @@ function clear() {
 function paint() {
 	clear();
 	player.draw();
-	requestAnimationFrame(paint);
+	if (game.keyDown) player.scroll();
+	if (!game.keyDown) player.scroll(0, 0);
+	console.log(game.keyDown);
+	setTimeout(() => requestAnimationFrame(paint), 100);
 }
 paint();
 
@@ -33,8 +39,13 @@ function keydown(e) {
 		ArrowUp: player.up(),
 		ArrowDown: player.down(),
 	};
-	player.scroll();
+	game.keyDown = true;
 	return obj[e.key]?.();
 }
 
+function keyUp() {
+	game.keyDown = false;
+}
+
 document.addEventListener('keydown', keydown);
+document.addEventListener('keyup', keyUp);
