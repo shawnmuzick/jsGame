@@ -24,7 +24,7 @@ export class Player {
 		this.animateRight = 11;
 		this.animateUp = 8;
 		this.animateDown = 10;
-		this.speed = 3;
+		this.speed = 10;
 		this.context = context;
 		this.direction = () => {
 			return null;
@@ -61,30 +61,27 @@ export class Player {
 	}
 
 	left() {
-		return () => {
-			this.spriteY = this.animateLeft * this.height;
-			this.xPosition -= this.speed;
-		};
+		console.log('left');
+		this.spriteY = this.animateLeft * this.height;
+		this.xPosition -= this.speed;
+		console.log(this.spriteY);
 	}
 
 	right() {
-		return () => {
-			this.spriteY = this.animateRight * this.height;
-			this.xPosition += this.speed;
-		};
+		console.log('right');
+		this.spriteY = this.animateRight * this.height;
+		this.xPosition += this.speed;
+		console.log(this.animateRight);
+		console.log(this);
 	}
 
 	up() {
-		return () => {
-			this.spriteY = this.animateUp * this.height;
-			this.yPosition -= this.speed;
-		};
+		this.spriteY = this.animateUp * this.height;
+		this.yPosition -= this.speed;
 	}
 
 	down() {
-		return () => {
-			this.spriteY = this.animateDown * this.height;
-			this.yPosition += this.speed;
-		};
+		this.spriteY = this.animateDown * this.height;
+		this.yPosition += this.speed;
 	}
 }

@@ -4,8 +4,8 @@ import { World } from './classes/world.js';
 
 const canvas = document.createElement('canvas');
 canvas.classList.add('canvas');
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = 800;
+canvas.height = 800;
 const context = canvas.getContext('2d');
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
@@ -45,16 +45,20 @@ paint();
 function keydown(e) {
 	player.isMoving = true;
 	let obj = {
-		ArrowRight: player.right(),
-		ArrowLeft: player.left(),
-		ArrowUp: player.up(),
-		ArrowDown: player.down(),
+		ArrowRight: player.right,
+		ArrowLeft: player.left,
+		ArrowUp: player.up,
+		ArrowDown: player.down,
 	};
-	player.direction = obj[e.key]?.() || player.direction;
+	player.direction = obj[e.key] || player.direction;
+	return;
 }
 
 function keyUp() {
 	player.isMoving = false;
+	player.direction = () => {
+		return null;
+	};
 }
 
 document.addEventListener('keydown', keydown);
