@@ -49,6 +49,7 @@ function keydown(e) {
 		ArrowLeft: player.left,
 		ArrowUp: player.up,
 		ArrowDown: player.down,
+		' ': player.mele,
 	};
 	player.direction = obj[e.key] || player.direction;
 	return;
