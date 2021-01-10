@@ -1,115 +1,91 @@
 export class Player {
-	constructor(
-		img,
-		spriteX,
-		spriteY,
-		spriteWidth,
-		spriteHeight,
-		cx,
-		cy,
-		cWidth,
-		cHeight,
-		context
-	) {
+	constructor(img, frameX, frameY, width, height, cx, cy, cWidth, cHeight, context) {
 		this.img = img;
-		this.spriteX = spriteX;
-		this.spriteY = spriteY + 10 * spriteHeight;
-		this.width = spriteWidth;
-		this.height = spriteHeight;
-		this.xPosition = cx;
-		this.yPosition = cy;
+		this.frameX = frameX;
+		this.frameY = frameY + 10 * height;
+		this.width = width;
+		this.height = height;
+		this.x = cx;
+		this.y = cy;
 		this.scaleWidth = cWidth;
 		this.scaleHeight = cHeight;
-		this.animateLeft = 9;
-		this.animateRight = 11;
-		this.animateUp = 8;
-		this.animateDown = 10;
-		this.speed = 10;
+		this.actions = { up: 8, left: 9, down: 10, right: 11, swordUp: 12 };
+		this.currentAction = 'idle';
 		this.context = context;
-		this.direction = () => {
-			return null;
-		};
-		this.isMoving = false;
+		this.speed = 5;
 	}
 
 	draw() {
-		const x = this.direction();
-		if (x === 1) {
-			if (this.spriteX === 64) this.spriteX = 192;
-			console.log(this);
-			this.context.drawImage(
-				this.img,
-				this.spriteX,
-				this.spriteY,
-				this.width * 3,
-				this.height * 3,
-				this.xPosition - 10 - this.width * 3,
-				this.yPosition - 10 - this.width * 3,
-				this.scaleWidth * 3,
-				this.scaleHeight * 3
-			);
-			this.scrollAttack();
+		if (this.currentAction === 'idle') {
+			this.update(0, 0);
+		} else if (this.currentAction === 'swordUp') {
+			this.update(0, 5, 1);
 		} else {
-			this.context.drawImage(
-				this.img,
-				this.spriteX,
-				this.spriteY,
-				this.width,
-				this.height,
-				this.xPosition,
-				this.yPosition,
-				this.scaleWidth,
-				this.scaleHeight
-			);
-			this.scroll();
+			this.update();
 		}
+		this.context.drawImage(
+			this.img,
+			this.frameX,
+			this.frameY,
+			this.width,
+			this.height,
+			this.x - this.width,
+			this.y - this.width,
+			this.scaleWidth,
+			this.scaleHeight
+		);
 	}
 
-	scroll(loopLimit = 8, loopStart = 0) {
-		if (!this.isMoving) {
-			loopStart = 0;
-			loopLimit = 0;
-			//reset sprite cooridnates for standing still
-			this.spriteX = 0;
-			this.spriteY = 0;
+	update(start = 0, end = 8, offset = 1) {
+		if (this.frameX >= this.width * end * offset) {
+			this.frameX = start;
 		}
-		if (this.spriteX >= this.width * loopLimit) {
-			this.spriteX = loopStart;
-		}
-
-		this.spriteX += this.width;
-	}
-
-	scrollAttack(loopLimit = 5, loopStart = 0) {
-		if (this.spriteX >= this.width * loopLimit * 3) {
-			this.spriteX = loopStart;
-			console.log('animation reset');
-		}
-
-		this.spriteX += this.width * 3;
+		this.frameX += this.width * offset;
 	}
 
 	left() {
-		this.spriteY = this.animateLeft * this.height;
-		this.xPosition -= this.speed;
+		return () => {
+			this.frameY = this.actions.left * this.height;
+			this.x -= this.speed;
+			this.currentAction = 'left';
+		};
 	}
 
 	right() {
-		this.spriteY = this.animateRight * this.height;
-		this.xPosition += this.speed;
+		return () => {
+			this.frameY = this.actions.right * this.height;
+			this.x += this.speed;
+			this.currentAction = 'right';
+		};
 	}
 
 	up() {
-		this.spriteY = this.animateUp * this.height;
-		this.yPosition -= this.speed;
+		return () => {
+			this.frameY = this.actions.up * this.height;
+			this.y -= this.speed;
+			this.currentAction = 'up';
+		};
 	}
 
 	down() {
-		this.spriteY = this.animateDown * this.height;
-		this.yPosition += this.speed;
+		return () => {
+			this.frameY = this.actions.down * this.height;
+			this.y += this.speed;
+			this.currentAction = 'down';
+		};
 	}
+
+	idle() {
+		let direction = this.actions[this.currentAction];
+		if (direction === 21) this.frameY = this.actions.up * this.height;
+		this.currentAction = 'idle';
+	}
+
 	mele() {
-		this.spriteY = 21 * this.height;
-		return 1;
+		return () => {
+			console.log('mele');
+			this.frameY = this.actions.swordUp * this.height;
+			this.currentAction = 'swordUp';
+		};
 	}
 }

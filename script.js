@@ -38,29 +38,24 @@ function paint() {
 	clear();
 	world.draw();
 	player.draw();
-	setTimeout(() => requestAnimationFrame(paint), 100);
 }
-paint();
 
 function keydown(e) {
-	player.isMoving = true;
 	let obj = {
-		ArrowRight: player.right,
-		ArrowLeft: player.left,
-		ArrowUp: player.up,
-		ArrowDown: player.down,
-		' ': player.mele,
+		ArrowRight: player.right(),
+		ArrowLeft: player.left(),
+		ArrowUp: player.up(),
+		ArrowDown: player.down(),
+		' ': player.mele(),
 	};
-	player.direction = obj[e.key] || player.direction;
+	obj[e.key]?.();
 	return;
 }
 
 function keyUp() {
-	player.isMoving = false;
-	player.direction = () => {
-		return null;
-	};
+	player.idle();
 }
 
 document.addEventListener('keydown', keydown);
 document.addEventListener('keyup', keyUp);
+window.onload = setInterval(paint, 1000 / 10);
