@@ -21,9 +21,9 @@ export class World {
 		this.scaleWidth = cWidth;
 		this.scaleHeight = cHeight;
 		this.context = context;
-		this.grid = [[], [], []];
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
+		this.grid = [[], [], [], [], [], [], [], [], []];
+		for (let i = 0; i < 8; i++) {
+			for (let j = 0; j < 8; j++) {
 				this.grid[i][j] = this.getRandomTile();
 			}
 			console.log(this.grid);
@@ -31,8 +31,8 @@ export class World {
 	}
 
 	draw() {
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
+		for (let i = 0; i < 8; i++) {
+			for (let j = 0; j < 8; j++) {
 				this.context.drawImage(
 					this.img,
 					this.grid[i][j].x * this.width,

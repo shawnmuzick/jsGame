@@ -9,7 +9,7 @@ export class Player {
 		this.y = cy;
 		this.scaleWidth = cWidth;
 		this.scaleHeight = cHeight;
-		this.actions = { up: 8, left: 9, down: 10, right: 11, swordUp: 12 };
+		this.actions = { up: 8, left: 9, down: 10, right: 11, swordUp: 21 };
 		this.currentAction = 'idle';
 		this.context = context;
 		this.speed = 5;
@@ -19,21 +19,35 @@ export class Player {
 		if (this.currentAction === 'idle') {
 			this.update(0, 0);
 		} else if (this.currentAction === 'swordUp') {
-			this.update(0, 5, 1);
+			this.update(0, 5, 3);
 		} else {
 			this.update();
 		}
-		this.context.drawImage(
-			this.img,
-			this.frameX,
-			this.frameY,
-			this.width,
-			this.height,
-			this.x - this.width,
-			this.y - this.width,
-			this.scaleWidth,
-			this.scaleHeight
-		);
+		if (this.currentAction === 'swordUp') {
+			this.context.drawImage(
+				this.img,
+				this.frameX,
+				this.frameY,
+				this.width * 3,
+				this.height * 3,
+				this.x - this.width - this.scaleWidth,
+				this.y - this.width - this.scaleHeight,
+				this.scaleWidth * 3,
+				this.scaleHeight * 3
+			);
+		} else {
+			this.context.drawImage(
+				this.img,
+				this.frameX,
+				this.frameY,
+				this.width,
+				this.height,
+				this.x - this.width,
+				this.y - this.width,
+				this.scaleWidth,
+				this.scaleHeight
+			);
+		}
 	}
 
 	update(start = 0, end = 8, offset = 1) {
@@ -83,7 +97,6 @@ export class Player {
 
 	mele() {
 		return () => {
-			console.log('mele');
 			this.frameY = this.actions.swordUp * this.height;
 			this.currentAction = 'swordUp';
 		};

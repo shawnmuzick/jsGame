@@ -14,7 +14,7 @@ document.body.appendChild(canvas);
 
 let playerImg = new Image();
 playerImg.src = './skeletonSprite.png';
-let player = new Player(playerImg, 0, 0, 64, 64, centerX, centerY, 200, 200, context);
+let player = new Player(playerImg, 0, 0, 64, 64, centerX, centerY, 100, 100, context);
 
 let worldImg = new Image();
 worldImg.src = './LPC_forest/forest_tiles.png';
@@ -26,8 +26,8 @@ let world = new World(
 	32,
 	0,
 	0,
-	Math.round(canvas.width / 3),
-	Math.round(canvas.height / 3),
+	Math.round(canvas.width / 8),
+	Math.round(canvas.height / 8),
 	context
 );
 function clear() {
