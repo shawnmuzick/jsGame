@@ -14,7 +14,7 @@ document.body.appendChild(canvas);
 
 let playerImg = new Image();
 playerImg.src = './skeletonSprite.png';
-let player = new Player(playerImg, 0, 0, 64, 64, centerX, centerY, 100, 100, context);
+let player = new Player(playerImg, 0, 0, 64, 64, centerX, centerY, context);
 
 let worldImg = new Image();
 worldImg.src = './LPC_forest/forest_tiles.png';
@@ -41,15 +41,27 @@ function paint() {
 }
 
 function keydown(e) {
-	let obj = {
-		ArrowRight: player.right(),
-		ArrowLeft: player.left(),
-		ArrowUp: player.up(),
-		ArrowDown: player.down(),
-		' ': player.mele(),
-	};
-	obj[e.key]?.();
-	return;
+	switch (e.key) {
+		case 'ArrowRight':
+			player.right();
+			break;
+
+		case 'ArrowLeft':
+			player.left();
+			break;
+
+		case 'ArrowUp':
+			player.up();
+			break;
+		case 'ArrowDown':
+			player.down();
+			break;
+		case ' ':
+			player.mele();
+			break;
+		default:
+			player.idle();
+	}
 }
 
 function keyUp() {

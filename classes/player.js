@@ -1,5 +1,5 @@
 export class Player {
-	constructor(img, frameX, frameY, width, height, cx, cy, cWidth, cHeight, context) {
+	constructor(img, frameX, frameY, width, height, cx, cy, context) {
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY + 10 * height;
@@ -7,8 +7,8 @@ export class Player {
 		this.height = height;
 		this.x = cx;
 		this.y = cy;
-		this.scaleWidth = cWidth;
-		this.scaleHeight = cHeight;
+		this.scaleWidth = width * 2;
+		this.scaleHeight = height * 2;
 		this.actions = { up: 8, left: 9, down: 10, right: 11, swordUp: 21 };
 		this.currentAction = 'idle';
 		this.context = context;
@@ -16,14 +16,9 @@ export class Player {
 	}
 
 	draw() {
-		if (this.currentAction === 'idle') {
-			this.update(0, 0);
-		} else if (this.currentAction === 'swordUp') {
-			this.update(0, 5, 3);
-		} else {
-			this.update();
-		}
 		if (this.currentAction === 'swordUp') {
+			console.log(this.frameX);
+			if (this.frameX % 3 !== 0) this.frameX = 0;
 			this.context.drawImage(
 				this.img,
 				this.frameX,
@@ -48,6 +43,13 @@ export class Player {
 				this.scaleHeight
 			);
 		}
+		if (this.currentAction === 'idle') {
+			this.update(0, 0);
+		} else if (this.currentAction === 'swordUp') {
+			this.update(0, 5, 3);
+		} else {
+			this.update();
+		}
 	}
 
 	update(start = 0, end = 8, offset = 1) {
@@ -58,35 +60,27 @@ export class Player {
 	}
 
 	left() {
-		return () => {
-			this.frameY = this.actions.left * this.height;
-			this.x -= this.speed;
-			this.currentAction = 'left';
-		};
+		this.frameY = this.actions.left * this.height;
+		this.x -= this.speed;
+		this.currentAction = 'left';
 	}
 
 	right() {
-		return () => {
-			this.frameY = this.actions.right * this.height;
-			this.x += this.speed;
-			this.currentAction = 'right';
-		};
+		this.frameY = this.actions.right * this.height;
+		this.x += this.speed;
+		this.currentAction = 'right';
 	}
 
 	up() {
-		return () => {
-			this.frameY = this.actions.up * this.height;
-			this.y -= this.speed;
-			this.currentAction = 'up';
-		};
+		this.frameY = this.actions.up * this.height;
+		this.y -= this.speed;
+		this.currentAction = 'up';
 	}
 
 	down() {
-		return () => {
-			this.frameY = this.actions.down * this.height;
-			this.y += this.speed;
-			this.currentAction = 'down';
-		};
+		this.frameY = this.actions.down * this.height;
+		this.y += this.speed;
+		this.currentAction = 'down';
 	}
 
 	idle() {
@@ -96,9 +90,7 @@ export class Player {
 	}
 
 	mele() {
-		return () => {
-			this.frameY = this.actions.swordUp * this.height;
-			this.currentAction = 'swordUp';
-		};
+		this.frameY = this.actions.swordUp * this.height;
+		this.currentAction = 'swordUp';
 	}
 }
