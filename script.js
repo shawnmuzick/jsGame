@@ -14,7 +14,12 @@ document.body.appendChild(canvas);
 
 let playerImg = new Image();
 playerImg.src = './skeletonSprite.png';
-let player = new Player(playerImg, 0, 0, 64, 64, centerX, centerY, context);
+
+let player2Img = new Image();
+player2Img.src = './download.png';
+let players = [];
+
+players.push(new Player(playerImg, 0, 0, 64, 64, centerX, centerY, context));
 
 let worldImg = new Image();
 worldImg.src = './LPC_forest/forest_tiles.png';
@@ -37,37 +42,37 @@ function clear() {
 function paint() {
 	clear();
 	world.draw();
-	player.draw();
+	players.forEach((p) => p.draw());
 }
 
 function keydown(e) {
-	switch (e.key) {
-		case 'ArrowRight':
-			player.right();
-			break;
-
-		case 'ArrowLeft':
-			player.left();
-			break;
-
-		case 'ArrowUp':
-			player.up();
-			break;
-		case 'ArrowDown':
-			player.down();
-			break;
-		case ' ':
-			player.mele();
-			break;
-		default:
-			player.idle();
-	}
+	players.forEach((player) => {
+		switch (e.key) {
+			case 'ArrowRight':
+				player.right();
+				break;
+			case 'ArrowLeft':
+				player.left();
+				break;
+			case 'ArrowUp':
+				player.up();
+				break;
+			case 'ArrowDown':
+				player.down();
+				break;
+			case ' ':
+				player.mele();
+				break;
+			default:
+				player.idle();
+		}
+	});
 }
 
 function keyUp() {
-	player.idle();
+	players.forEach((p) => p.idle());
 }
 
 document.addEventListener('keydown', keydown);
 document.addEventListener('keyup', keyUp);
-window.onload = setInterval(paint, 1000 / 10);
+window.onload = setInterval(paint, 1000 / 15);
