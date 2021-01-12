@@ -20,7 +20,6 @@ export class Player {
 			swordRight: 30,
 		};
 		this.currentAction = 'idle';
-		this.facing = 'down';
 		this.context = context;
 		this.speed = 5;
 	}
@@ -82,28 +81,24 @@ export class Player {
 		this.frameY = this.actions.left * this.height;
 		this.x -= this.speed;
 		this.currentAction = 'left';
-		this.facing = 'left';
 	}
 
 	right() {
 		this.frameY = this.actions.right * this.height;
 		this.x += this.speed;
 		this.currentAction = 'right';
-		this.facing = 'right';
 	}
 
 	up() {
 		this.frameY = this.actions.up * this.height;
 		this.y -= this.speed;
 		this.currentAction = 'up';
-		this.facing = 'up';
 	}
 
 	down() {
 		this.frameY = this.actions.down * this.height;
 		this.y += this.speed;
 		this.currentAction = 'down';
-		this.facing = 'down';
 	}
 
 	idle() {
@@ -118,16 +113,16 @@ export class Player {
 
 	mele() {
 		console.log('mele');
-		if (this.facing === 'up') {
+		if (this.frameY / this.height === this.actions['up']) {
 			this.frameY = this.actions.swordUp * this.height;
 			this.currentAction = 'swordUp';
-		} else if (this.facing === 'left') {
+		} else if (this.frameY / this.height === this.actions['left']) {
 			this.frameY = this.actions.swordLeft * this.height;
 			this.currentAction = 'swordLeft';
-		} else if (this.facing === 'right') {
+		} else if (this.frameY / this.height === this.actions['right']) {
 			this.frameY = this.actions.swordRight * this.height;
 			this.currentAction = 'swordRight';
-		} else if (this.facing === 'down') {
+		} else if (this.frameY / this.height === this.actions['down']) {
 			this.frameY = this.actions.swordDown * this.height;
 			this.currentAction = 'swordDown';
 		}
