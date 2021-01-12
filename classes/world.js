@@ -26,7 +26,6 @@ export class World {
 			for (let j = 0; j < 8; j++) {
 				this.grid[i][j] = this.getRandomTile();
 			}
-			console.log(this.grid);
 		}
 	}
 

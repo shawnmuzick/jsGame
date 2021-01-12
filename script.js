@@ -1,5 +1,5 @@
 // skele sprite playground
-import { Player } from './classes/player.js';
+import { Skeleton, Necromancer } from './classes/player.js';
 import { World } from './classes/world.js';
 
 const canvas = document.createElement('canvas');
@@ -12,14 +12,9 @@ const centerY = canvas.height / 2;
 
 document.body.appendChild(canvas);
 
-let playerImg = new Image();
-playerImg.src = './skeletonSprite.png';
-
-let player2Img = new Image();
-player2Img.src = './download.png';
 let players = [];
-
-players.push(new Player(playerImg, 0, 0, 64, 64, centerX, centerY, context));
+players.push(new Skeleton({ x: centerX, y: centerY, context }));
+players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
 let worldImg = new Image();
 worldImg.src = './LPC_forest/forest_tiles.png';
@@ -47,6 +42,7 @@ function paint() {
 
 function keydown(e) {
 	players.forEach((player) => {
+		player.isIdle = false;
 		switch (e.key) {
 			case 'ArrowRight':
 				player.right();

@@ -1,12 +1,32 @@
-export class Player {
-	constructor(img, frameX, frameY, width, height, cx, cy, context) {
+function getSprite(name) {
+	const sprites = {
+		skeleton: './sprites/skeleton.png',
+		necromancer: './sprites/necromancer.png',
+	};
+	const sprite = new Image();
+	sprite.src = sprites[name];
+	return sprite;
+}
+
+class Player {
+	constructor({
+		img,
+		frameX = 0,
+		frameY = 0,
+		width = 64,
+		height = 64,
+		x = 0,
+		y = 0,
+		context,
+	}) {
+		console.log('constructor ran');
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY + 10 * height;
 		this.width = width;
 		this.height = height;
-		this.x = cx;
-		this.y = cy;
+		this.x = x;
+		this.y = y;
 		this.scaleWidth = width * 2;
 		this.scaleHeight = height * 2;
 		this.actions = {
@@ -19,18 +39,14 @@ export class Player {
 			swordLeft: 24,
 			swordRight: 30,
 		};
-		this.currentAction = 'idle';
 		this.context = context;
 		this.speed = 5;
+		this.isIdle = true;
 	}
 
 	draw() {
-		if (
-			this.currentAction === 'swordUp' ||
-			this.currentAction === 'swordDown' ||
-			this.currentAction === 'swordLeft' ||
-			this.currentAction === 'swordRight'
-		) {
+		let meleFrames = [21, 24, 27, 30];
+		if (meleFrames.includes(this.frameY / this.height)) {
 			if (this.frameX % 3 !== 0) this.frameX = 0;
 			this.context.drawImage(
 				this.img,
@@ -43,6 +59,7 @@ export class Player {
 				this.scaleWidth * 3,
 				this.scaleHeight * 3
 			);
+			this.update(0, 5, 3);
 		} else {
 			this.context.drawImage(
 				this.img,
@@ -55,18 +72,11 @@ export class Player {
 				this.scaleWidth,
 				this.scaleHeight
 			);
-		}
-		if (this.currentAction === 'idle') {
-			this.update(0, 0);
-		} else if (
-			this.currentAction === 'swordUp' ||
-			this.currentAction === 'swordDown' ||
-			this.currentAction === 'swordLeft' ||
-			this.currentAction === 'swordRight'
-		) {
-			this.update(0, 5, 3);
-		} else {
-			this.update();
+			if (this.isIdle) {
+				this.update(0, 0);
+			} else {
+				this.update();
+			}
 		}
 	}
 
@@ -102,30 +112,45 @@ export class Player {
 	}
 
 	idle() {
-		let direction = this.actions[this.currentAction];
+		//get the current action of the player
+		let direction = this.frameY / this.height;
+
 		//return the player to their last facing direction after a mele attack
 		if (direction === 21) this.frameY = this.actions.up * this.height;
 		if (direction === 24) this.frameY = this.actions.left * this.height;
 		if (direction === 27) this.frameY = this.actions.down * this.height;
 		if (direction === 30) this.frameY = this.actions.right * this.height;
-		this.currentAction = 'idle';
+		//prevents animation skip
+		this.frameX = 0;
+		this.isIdle = true;
 	}
 
 	mele() {
-		console.log('mele');
+		//check which direction we're facing so we swing in that direction
 		if (this.frameY / this.height === this.actions['up']) {
 			this.frameY = this.actions.swordUp * this.height;
-			this.currentAction = 'swordUp';
 		} else if (this.frameY / this.height === this.actions['left']) {
 			this.frameY = this.actions.swordLeft * this.height;
-			this.currentAction = 'swordLeft';
 		} else if (this.frameY / this.height === this.actions['right']) {
 			this.frameY = this.actions.swordRight * this.height;
-			this.currentAction = 'swordRight';
 		} else if (this.frameY / this.height === this.actions['down']) {
 			this.frameY = this.actions.swordDown * this.height;
-			this.currentAction = 'swordDown';
 		}
-		console.log(this.currentAction);
+	}
+}
+
+export class Skeleton extends Player {
+	constructor(obj) {
+		obj.img = getSprite('skeleton');
+		super(obj);
+		console.log(this);
+	}
+}
+
+export class Necromancer extends Player {
+	constructor(obj) {
+		obj.img = getSprite('necromancer');
+		super(obj);
+		console.log(this);
 	}
 }
