@@ -19,7 +19,6 @@ class Player {
 		y = 0,
 		context,
 	}) {
-		console.log('constructor ran');
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY + 10 * height;
@@ -61,6 +60,7 @@ class Player {
 			);
 			this.update(0, 5, 3);
 		} else {
+			let spellFrames = [0, 1, 2, 3];
 			this.context.drawImage(
 				this.img,
 				this.frameX,
@@ -73,8 +73,13 @@ class Player {
 				this.scaleHeight
 			);
 			if (this.isIdle) {
+				//update for idle
 				this.update(0, 0);
+			} else if (spellFrames.includes(this.frameY / this.height)) {
+				//update for spell cast
+				this.update(0, 6);
 			} else {
+				//general update
 				this.update();
 			}
 		}
@@ -90,25 +95,21 @@ class Player {
 	left() {
 		this.frameY = this.actions.left * this.height;
 		this.x -= this.speed;
-		this.currentAction = 'left';
 	}
 
 	right() {
 		this.frameY = this.actions.right * this.height;
 		this.x += this.speed;
-		this.currentAction = 'right';
 	}
 
 	up() {
 		this.frameY = this.actions.up * this.height;
 		this.y -= this.speed;
-		this.currentAction = 'up';
 	}
 
 	down() {
 		this.frameY = this.actions.down * this.height;
 		this.y += this.speed;
-		this.currentAction = 'down';
 	}
 
 	idle() {
@@ -143,7 +144,7 @@ export class Skeleton extends Player {
 	constructor(obj) {
 		obj.img = getSprite('skeleton');
 		super(obj);
-		console.log(this);
+		this.speed = 3;
 	}
 }
 
@@ -151,6 +152,24 @@ export class Necromancer extends Player {
 	constructor(obj) {
 		obj.img = getSprite('necromancer');
 		super(obj);
-		console.log(this);
+		this.actions.spellUp = 0;
+		this.actions.spellLeft = 1;
+		this.actions.spellDown = 2;
+		this.actions.spellRight = 3;
+		this.pets = [];
+	}
+	spell() {
+		//check which direction we're facing so we swing in that direction
+		if (this.frameY / this.height === this.actions['up']) {
+			this.frameY = this.actions.spellUp * this.height;
+		} else if (this.frameY / this.height === this.actions['left']) {
+			this.frameY = this.actions.spellLeft * this.height;
+		} else if (this.frameY / this.height === this.actions['right']) {
+			this.frameY = this.actions.spellRight * this.height;
+		} else if (this.frameY / this.height === this.actions['down']) {
+			this.frameY = this.actions.spellDown * this.height;
+		}
+		let obj = { context: this.context, x: this.x, y: this.y };
+		this.pets.push(new Skeleton(obj));
 	}
 }

@@ -13,7 +13,6 @@ const centerY = canvas.height / 2;
 document.body.appendChild(canvas);
 
 let players = [];
-players.push(new Skeleton({ x: centerX, y: centerY, context }));
 players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
 let worldImg = new Image();
@@ -37,10 +36,15 @@ function clear() {
 function paint() {
 	clear();
 	world.draw();
-	players.forEach((p) => p.draw());
+	players.forEach((p) => {
+		p.draw();
+		if (p.pets?.length > 0) {
+			p.pets.forEach((pet) => pet.draw());
+		}
+	});
 }
 
-function keydown(e) {
+function keydown(e, players) {
 	players.forEach((player) => {
 		player.isIdle = false;
 		switch (e.key) {
@@ -56,19 +60,29 @@ function keydown(e) {
 			case 'ArrowDown':
 				player.down();
 				break;
+			case 's':
+				player.spell?.();
 			case ' ':
 				player.mele();
 				break;
 			default:
 				player.idle();
 		}
+		if (player.pets?.length > 0) {
+			keydown(e, player.pets);
+		}
 	});
 }
 
 function keyUp() {
-	players.forEach((p) => p.idle());
+	players.forEach((p) => {
+		p.idle();
+		if (p.pets?.length > 0) {
+			p.pets.forEach((pet) => pet.idle());
+		}
+	});
 }
 
-document.addEventListener('keydown', keydown);
+document.addEventListener('keydown', (e) => keydown(e, players));
 document.addEventListener('keyup', keyUp);
 window.onload = setInterval(paint, 1000 / 15);
