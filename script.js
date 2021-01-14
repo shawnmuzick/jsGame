@@ -41,6 +41,10 @@ function paint() {
 		if (p.pets?.length > 0) {
 			p.pets.forEach((pet) => pet.draw());
 		}
+		//if the caster is idle, keep the pets wandering
+		if (p.isIdle === true) {
+			p.pets.forEach((pet) => pet.idle());
+		}
 	});
 }
 

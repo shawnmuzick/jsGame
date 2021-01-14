@@ -1,3 +1,33 @@
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
+function wander() {
+	//still need to implement
+	//if out of summoner range, don't let them wander further
+
+	let direction = getRandomInt(8, 12);
+	this.frameY = direction * this.height;
+	switch (direction) {
+		// in order: up, left, right, down
+		case 8:
+			this.y -= this.speed;
+			break;
+		case 9:
+			this.x -= this.speed;
+			break;
+		case 10:
+			this.y += this.speed;
+			break;
+		case 11:
+			this.x += this.speed;
+			break;
+		default:
+			this.y -= this.speed;
+	}
+	return;
+}
+
 function getSprite(name) {
 	const sprites = {
 		skeleton: './sprites/skeleton.png',
@@ -170,6 +200,12 @@ export class Necromancer extends Player {
 			this.frameY = this.actions.spellDown * this.height;
 		}
 		let obj = { context: this.context, x: this.x, y: this.y };
-		this.pets.push(new Skeleton(obj));
+		//pets should wander on idle
+		let pet = new Skeleton(obj);
+		pet.idle = wander;
+
+		//pets should track their summoner
+		pet.summoner = this;
+		this.pets.push(pet);
 	}
 }

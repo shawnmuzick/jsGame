@@ -43,8 +43,8 @@ export class World {
 					this.scaleWidth * i,
 					this.scaleHeight * j,
 					//fixes breaks/seams
-					this.scaleWidth + 5,
-					this.scaleHeight + 5
+					this.scaleWidth + 2,
+					this.scaleHeight + 2
 				);
 				//if drew plain grass in the step above
 				if (this.grid[i][j].geofeat !== false) {
