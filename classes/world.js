@@ -23,8 +23,8 @@ export class World {
 		this.context = context;
 		this.grid = [[], [], [], [], [], [], [], [], []];
 		//fill the visible world with random grass tiles
-		for (let i = 0; i < 8; i++) {
-			for (let j = 0; j < 8; j++) {
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
 				this.grid[i][j] = this.getRandomTile(5, 3);
 			}
 		}
@@ -32,8 +32,8 @@ export class World {
 
 	draw() {
 		//render out the world tiles
-		for (let i = 0; i < 8; i++) {
-			for (let j = 0; j < 8; j++) {
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
 				this.context.drawImage(
 					this.img,
 					this.grid[i][j].x * this.width,

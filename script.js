@@ -62,6 +62,7 @@ function keydown(e, players) {
 				break;
 			case 's':
 				player.spell?.();
+				break;
 			case ' ':
 				player.mele();
 				break;
