@@ -3,13 +3,32 @@ function getRandomInt(min, max) {
 }
 
 function wander() {
-	//still need to implement
-	//if out of summoner range, don't let them wander further
+	//if out of summoner x range, don't let them wander further
+	let leftLimit =
+		this.x <= this.summoner.x && this.summoner.x - this.x > this.summoner.petRange;
+	let rightLimit =
+		this.x >= this.summoner.x && this.x - this.summoner.x > this.summoner.petRange;
+	let upLimit =
+		this.y <= this.summoner.y && this.summoner.y - this.y > this.summoner.petRange;
+	let downLimit =
+		this.y >= this.summoner.y && this.y - this.summoner.y > this.summoner.petRange;
 
 	let direction = getRandomInt(8, 12);
+	if (leftLimit && direction === 9) {
+		direction += 2;
+	}
+	if (rightLimit && direction === 11) {
+		direction -= 2;
+	}
+	if (upLimit && direction === 8) {
+		direction += 2;
+	}
+	if (downLimit && direction === 10) {
+		direction -= 2;
+	}
 	this.frameY = direction * this.height;
 	switch (direction) {
-		// in order: up, left, right, down
+		// in order: up, left, down, right
 		case 8:
 			this.y -= this.speed;
 			break;
@@ -71,6 +90,16 @@ class Player {
 		this.context = context;
 		this.speed = 5;
 		this.isIdle = true;
+		this.stats = {
+			vit: 0,
+			dex: 0,
+			str: 0,
+			mag: 0,
+			exp: 0,
+			lvl: 1,
+			// pts represents lvl up points to allocate
+			pts: 0,
+		};
 	}
 
 	draw() {
@@ -168,6 +197,8 @@ class Player {
 			this.frameY = this.actions.swordDown * this.height;
 		}
 	}
+
+	lvlUp() {}
 }
 
 export class Skeleton extends Player {
@@ -175,6 +206,15 @@ export class Skeleton extends Player {
 		obj.img = getSprite('skeleton');
 		super(obj);
 		this.speed = 3;
+		this.stats = {
+			vit: 8,
+			dex: 7,
+			str: 10,
+			mag: 5,
+			exp: 0,
+			lvl: 1,
+			pts: 0,
+		};
 	}
 }
 
@@ -187,6 +227,16 @@ export class Necromancer extends Player {
 		this.actions.spellDown = 2;
 		this.actions.spellRight = 3;
 		this.pets = [];
+		this.stats = {
+			vit: 10,
+			dex: 5,
+			str: 5,
+			mag: 10,
+			exp: 0,
+			lvl: 1,
+			pts: 0,
+		};
+		this.petRange = 100;
 	}
 	spell() {
 		//check which direction we're facing so we swing in that direction
@@ -203,6 +253,16 @@ export class Necromancer extends Player {
 		//pets should wander on idle
 		let pet = new Skeleton(obj);
 		pet.idle = wander;
+		pet.stats = {
+			vit: this.stats.vit / 4,
+			dex: this.stats.dex / 4,
+			str: this.stats.str / 4,
+			mag: this.stats.mag / 4,
+			exp: null,
+			lvl: this.stats.lvl,
+			pts: null,
+		};
+		pet.speed = 25;
 
 		//pets should track their summoner
 		pet.summoner = this;
