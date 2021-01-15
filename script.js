@@ -37,7 +37,6 @@ function paint() {
 	clear();
 	world.draw();
 	players.forEach((p) => {
-		p.draw();
 		if (p.pets?.length > 0) {
 			p.pets.forEach((pet) => pet.draw());
 		}
@@ -45,6 +44,8 @@ function paint() {
 		if (p.isIdle === true) {
 			p.pets.forEach((pet) => pet.idle());
 		}
+		//draw player last so they appear above pets in an overlap
+		p.draw();
 	});
 }
 

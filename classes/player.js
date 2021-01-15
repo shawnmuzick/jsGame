@@ -75,8 +75,8 @@ class Player {
 		this.height = height;
 		this.x = x;
 		this.y = y;
-		this.scaleWidth = width * 2;
-		this.scaleHeight = height * 2;
+		this.scaleWidth = width * 1.5;
+		this.scaleHeight = height * 1.5;
 		this.actions = {
 			up: 8,
 			left: 9,
@@ -189,12 +189,24 @@ class Player {
 		//check which direction we're facing so we swing in that direction
 		if (this.frameY / this.height === this.actions['up']) {
 			this.frameY = this.actions.swordUp * this.height;
+			this.pets.forEach((p) => {
+				p.frameY = p.actions.swordUp * p.height;
+			});
 		} else if (this.frameY / this.height === this.actions['left']) {
 			this.frameY = this.actions.swordLeft * this.height;
+			this.pets.forEach((p) => {
+				p.frameY = p.actions.swordLeft * p.height;
+			});
 		} else if (this.frameY / this.height === this.actions['right']) {
 			this.frameY = this.actions.swordRight * this.height;
+			this.pets.forEach((p) => {
+				p.frameY = p.actions.swordRight * p.height;
+			});
 		} else if (this.frameY / this.height === this.actions['down']) {
 			this.frameY = this.actions.swordDown * this.height;
+			this.pets.forEach((p) => {
+				p.frameY = p.actions.swordDown * p.height;
+			});
 		}
 	}
 
@@ -262,7 +274,6 @@ export class Necromancer extends Player {
 			lvl: this.stats.lvl,
 			pts: null,
 		};
-		pet.speed = 25;
 
 		//pets should track their summoner
 		pet.summoner = this;
