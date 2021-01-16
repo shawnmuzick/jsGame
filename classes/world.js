@@ -58,8 +58,8 @@ export class World {
 						this.scaleWidth * i,
 						this.scaleHeight * j,
 						//fixes breaks/seams
-						this.scaleWidth + 5,
-						this.scaleHeight + 5
+						this.scaleWidth + 2,
+						this.scaleHeight + 2
 					);
 				}
 			}
@@ -74,7 +74,9 @@ export class World {
 		if (!x && !y) geoFeat = true;
 		if (geoFeat) {
 			//it can never return true in the 3rd parameter
-			let obj = this.getRandomTile(6, 3, 0, 3);
+			let obj = this.getRandomTile(7, 3, 0, 3);
+			//this particular source tile is broken, so just skip over it
+			if (obj.x === 5) obj.x++;
 			geoFeat = {
 				x: obj.x,
 				y: obj.y,

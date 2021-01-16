@@ -14,16 +14,16 @@ function wander() {
 		this.y >= this.summoner.y && this.y - this.summoner.y > this.summoner.petRange;
 
 	let direction = getRandomInt(8, 12);
-	if (leftLimit && direction === 9) {
+	if (upLimit && direction === this.actions.up) {
 		direction += 2;
 	}
-	if (rightLimit && direction === 11) {
+	if (leftLimit && direction === this.actions.left) {
+		direction += 2;
+	}
+	if (downLimit && direction === this.actions.down) {
 		direction -= 2;
 	}
-	if (upLimit && direction === 8) {
-		direction += 2;
-	}
-	if (downLimit && direction === 10) {
+	if (rightLimit && direction === this.actions.right) {
 		direction -= 2;
 	}
 	this.frameY = direction * this.height;
@@ -90,7 +90,11 @@ class Player {
 		this.context = context;
 		this.speed = 5;
 		this.isIdle = true;
+		this.isLiving = true;
+		this.inventory = [];
 		this.stats = {
+			hp: 0,
+			mp: 0,
 			vit: 0,
 			dex: 0,
 			str: 0,
@@ -151,24 +155,24 @@ class Player {
 		this.frameX += this.width * offset;
 	}
 
-	left() {
-		this.frameY = this.actions.left * this.height;
-		this.x -= this.speed;
-	}
-
-	right() {
-		this.frameY = this.actions.right * this.height;
-		this.x += this.speed;
-	}
-
 	up() {
 		this.frameY = this.actions.up * this.height;
 		this.y -= this.speed;
 	}
 
+	left() {
+		this.frameY = this.actions.left * this.height;
+		this.x -= this.speed;
+	}
+
 	down() {
 		this.frameY = this.actions.down * this.height;
 		this.y += this.speed;
+	}
+
+	right() {
+		this.frameY = this.actions.right * this.height;
+		this.x += this.speed;
 	}
 
 	idle() {
@@ -197,20 +201,22 @@ class Player {
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordLeft * p.height;
 			});
-		} else if (this.frameY / this.height === this.actions['right']) {
-			this.frameY = this.actions.swordRight * this.height;
-			this.pets.forEach((p) => {
-				p.frameY = p.actions.swordRight * p.height;
-			});
 		} else if (this.frameY / this.height === this.actions['down']) {
 			this.frameY = this.actions.swordDown * this.height;
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordDown * p.height;
 			});
+		} else if (this.frameY / this.height === this.actions['right']) {
+			this.frameY = this.actions.swordRight * this.height;
+			this.pets.forEach((p) => {
+				p.frameY = p.actions.swordRight * p.height;
+			});
 		}
 	}
 
-	lvlUp() {}
+	lvlUp() {
+		this.stats.pts += 5;
+	}
 }
 
 export class Skeleton extends Player {
@@ -219,6 +225,8 @@ export class Skeleton extends Player {
 		super(obj);
 		this.speed = 3;
 		this.stats = {
+			hp: 8,
+			mp: 0,
 			vit: 8,
 			dex: 7,
 			str: 10,
@@ -240,6 +248,8 @@ export class Necromancer extends Player {
 		this.actions.spellRight = 3;
 		this.pets = [];
 		this.stats = {
+			hp: 10,
+			mp: 10,
 			vit: 10,
 			dex: 5,
 			str: 5,
@@ -256,16 +266,18 @@ export class Necromancer extends Player {
 			this.frameY = this.actions.spellUp * this.height;
 		} else if (this.frameY / this.height === this.actions['left']) {
 			this.frameY = this.actions.spellLeft * this.height;
-		} else if (this.frameY / this.height === this.actions['right']) {
-			this.frameY = this.actions.spellRight * this.height;
 		} else if (this.frameY / this.height === this.actions['down']) {
 			this.frameY = this.actions.spellDown * this.height;
+		} else if (this.frameY / this.height === this.actions['right']) {
+			this.frameY = this.actions.spellRight * this.height;
 		}
-		let obj = { context: this.context, x: this.x, y: this.y };
+
 		//pets should wander on idle
-		let pet = new Skeleton(obj);
+		let pet = new Skeleton({ context: this.context, x: this.x, y: this.y });
 		pet.idle = wander;
 		pet.stats = {
+			hp: this.stats.hp / 4,
+			mp: this.stats.mp / 4,
 			vit: this.stats.vit / 4,
 			dex: this.stats.dex / 4,
 			str: this.stats.str / 4,
@@ -278,5 +290,6 @@ export class Necromancer extends Player {
 		//pets should track their summoner
 		pet.summoner = this;
 		this.pets.push(pet);
+		this.mp -= 2;
 	}
 }
