@@ -1,3 +1,5 @@
+import { HUD } from "./HUD.js";
+
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
@@ -5,13 +7,17 @@ function getRandomInt(min, max) {
 function wander() {
 	//if out of summoner x range, don't let them wander further
 	let leftLimit =
-		this.x <= this.summoner.x && this.summoner.x - this.x > this.summoner.petRange;
+		this.x <= this.summoner.x &&
+		this.summoner.x - this.x > this.summoner.petRange;
 	let rightLimit =
-		this.x >= this.summoner.x && this.x - this.summoner.x > this.summoner.petRange;
+		this.x >= this.summoner.x &&
+		this.x - this.summoner.x > this.summoner.petRange;
 	let upLimit =
-		this.y <= this.summoner.y && this.summoner.y - this.y > this.summoner.petRange;
+		this.y <= this.summoner.y &&
+		this.summoner.y - this.y > this.summoner.petRange;
 	let downLimit =
-		this.y >= this.summoner.y && this.y - this.summoner.y > this.summoner.petRange;
+		this.y >= this.summoner.y &&
+		this.y - this.summoner.y > this.summoner.petRange;
 
 	let direction = getRandomInt(8, 12);
 	if (upLimit && direction === this.actions.up) {
@@ -49,8 +55,8 @@ function wander() {
 
 function getSprite(name) {
 	const sprites = {
-		skeleton: './sprites/skeleton.png',
-		necromancer: './sprites/necromancer.png',
+		skeleton: "./sprites/skeleton.png",
+		necromancer: "./sprites/necromancer.png",
 	};
 	const sprite = new Image();
 	sprite.src = sprites[name];
@@ -93,8 +99,8 @@ class Player {
 		this.isLiving = true;
 		this.inventory = [];
 		this.stats = {
-			hp: 0,
-			mp: 0,
+			hp: { max: 0, current: 0 },
+			mp: { max: 0, current: 0 },
 			vit: 0,
 			dex: 0,
 			str: 0,
@@ -104,6 +110,11 @@ class Player {
 			// pts represents lvl up points to allocate
 			pts: 0,
 		};
+		this.HUD = new HUD({
+			x: x,
+			y: y,
+			context: context,
+		});
 	}
 
 	draw() {
@@ -138,7 +149,9 @@ class Player {
 			if (this.isIdle) {
 				//update for idle
 				this.update(0, 0);
-			} else if (spellFrames.includes(this.frameY / this.height)) {
+			} else if (
+				spellFrames.includes(this.frameY / this.height)
+			) {
 				//update for spell cast
 				this.update(0, 6);
 			} else {
@@ -146,6 +159,12 @@ class Player {
 				this.update();
 			}
 		}
+		this.HUD.draw(
+			this.stats.mp.max,
+			this.stats.mp.current,
+			this.stats.hp.max,
+			this.stats.hp.current
+		);
 	}
 
 	update(start = 0, end = 8, offset = 1) {
@@ -180,10 +199,14 @@ class Player {
 		let direction = this.frameY / this.height;
 
 		//return the player to their last facing direction after a mele attack
-		if (direction === 21) this.frameY = this.actions.up * this.height;
-		if (direction === 24) this.frameY = this.actions.left * this.height;
-		if (direction === 27) this.frameY = this.actions.down * this.height;
-		if (direction === 30) this.frameY = this.actions.right * this.height;
+		if (direction === 21)
+			this.frameY = this.actions.up * this.height;
+		if (direction === 24)
+			this.frameY = this.actions.left * this.height;
+		if (direction === 27)
+			this.frameY = this.actions.down * this.height;
+		if (direction === 30)
+			this.frameY = this.actions.right * this.height;
 		//prevents animation skip
 		this.frameX = 0;
 		this.isIdle = true;
@@ -191,22 +214,25 @@ class Player {
 
 	mele() {
 		//check which direction we're facing so we swing in that direction
-		if (this.frameY / this.height === this.actions['up']) {
+		if (this.frameY / this.height === this.actions["up"]) {
 			this.frameY = this.actions.swordUp * this.height;
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordUp * p.height;
 			});
-		} else if (this.frameY / this.height === this.actions['left']) {
+		} else if (this.frameY / this.height === this.actions["left"]) {
 			this.frameY = this.actions.swordLeft * this.height;
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordLeft * p.height;
 			});
-		} else if (this.frameY / this.height === this.actions['down']) {
+		} else if (this.frameY / this.height === this.actions["down"]) {
 			this.frameY = this.actions.swordDown * this.height;
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordDown * p.height;
 			});
-		} else if (this.frameY / this.height === this.actions['right']) {
+		} else if (
+			this.frameY / this.height ===
+			this.actions["right"]
+		) {
 			this.frameY = this.actions.swordRight * this.height;
 			this.pets.forEach((p) => {
 				p.frameY = p.actions.swordRight * p.height;
@@ -221,7 +247,7 @@ class Player {
 
 export class Skeleton extends Player {
 	constructor(obj) {
-		obj.img = getSprite('skeleton');
+		obj.img = getSprite("skeleton");
 		super(obj);
 		this.speed = 3;
 		this.stats = {
@@ -240,7 +266,7 @@ export class Skeleton extends Player {
 
 export class Necromancer extends Player {
 	constructor(obj) {
-		obj.img = getSprite('necromancer');
+		obj.img = getSprite("necromancer");
 		super(obj);
 		this.actions.spellUp = 0;
 		this.actions.spellLeft = 1;
@@ -248,8 +274,8 @@ export class Necromancer extends Player {
 		this.actions.spellRight = 3;
 		this.pets = [];
 		this.stats = {
-			hp: 10,
-			mp: 10,
+			hp: { max: 10, current: 10 },
+			mp: { max: 10, current: 10 },
 			vit: 10,
 			dex: 5,
 			str: 5,
@@ -261,19 +287,32 @@ export class Necromancer extends Player {
 		this.petRange = 100;
 	}
 	spell() {
+		// if not enough mana, return
+		if (this.stats.mp.current <= 0) {
+			console.log("out of mana");
+			return;
+		}
+
 		//check which direction we're facing so we swing in that direction
-		if (this.frameY / this.height === this.actions['up']) {
+		if (this.frameY / this.height === this.actions["up"]) {
 			this.frameY = this.actions.spellUp * this.height;
-		} else if (this.frameY / this.height === this.actions['left']) {
+		} else if (this.frameY / this.height === this.actions["left"]) {
 			this.frameY = this.actions.spellLeft * this.height;
-		} else if (this.frameY / this.height === this.actions['down']) {
+		} else if (this.frameY / this.height === this.actions["down"]) {
 			this.frameY = this.actions.spellDown * this.height;
-		} else if (this.frameY / this.height === this.actions['right']) {
+		} else if (
+			this.frameY / this.height ===
+			this.actions["right"]
+		) {
 			this.frameY = this.actions.spellRight * this.height;
 		}
 
 		//pets should wander on idle
-		let pet = new Skeleton({ context: this.context, x: this.x, y: this.y });
+		let pet = new Skeleton({
+			context: this.context,
+			x: this.x,
+			y: this.y,
+		});
 		pet.idle = wander;
 		pet.stats = {
 			hp: this.stats.hp / 4,
@@ -286,10 +325,14 @@ export class Necromancer extends Player {
 			lvl: this.stats.lvl,
 			pts: null,
 		};
+		pet.HUD = {};
+		pet.HUD.draw = () => {
+			return;
+		};
 
 		//pets should track their summoner
 		pet.summoner = this;
 		this.pets.push(pet);
-		this.mp -= 2;
+		this.stats.mp.current -= 2;
 	}
 }
