@@ -1,4 +1,3 @@
-// maybe break hud components like orbs into separate classes
 export class HUD {
 	constructor({ context, x, y }) {
 		this.context = context;
@@ -7,42 +6,60 @@ export class HUD {
 		this.radius = 50;
 	}
 
-	draw(mpMax, mpCurrent, hpMax,hpCurrent) {
-		// begin HUD bar---------------------------------------------------------------------
-		this.context.beginPath();
-		this.context.rect(0, this.y - 50, this.x, 50);
-		this.context.fillStyle = "grey";
-		this.context.fill();
-		// End HUD bar------------------------------------------------------------------------
-
-		// Begin MP orb------------------------------------------------------------------------
-		this.context.globalCompositeOperation = "source-over";
-		this.context.beginPath();
-		this.context.arc(
+	draw(mpMax, mpCurrent, hpMax, hpCurrent) {
+		// draw the dash area
+		this.drawConsole();
+		// draw hp/mp globes with a transparent white "glass" behind them
+		this.drawOrb(
+			mpMax,
+			mpMax,
 			this.x - this.radius,
 			this.y - this.radius,
-			this.radius,
-			(1.5+(1-(mpCurrent/mpMax))) * Math.PI,
-			(3.5-(1-(mpCurrent/mpMax))) * Math.PI,
+			"white"
 		);
-		this.context.fillStyle = "blue";
-		this.context.fill();
-
-		// End MP orb--------------------------------------------------------------------------
-
-		// Begin HP orb-------------------------------------------------------------------------
-		this.context.globalCompositeOperation = "source-over";
-		this.context.beginPath();
-		this.context.arc(
+		this.drawOrb(
+			mpMax,
+			mpCurrent,
+			this.x - this.radius,
+			this.y - this.radius,
+			"blue"
+		);
+		this.drawOrb(
+			hpMax,
+			hpMax,
 			0 + this.radius,
 			this.y - this.radius,
-			this.radius,
-			(1.5+(1-(hpCurrent/hpMax))) * Math.PI,
-			(3.5-(1-(hpCurrent/hpMax))) * Math.PI,
+			"white"
 		);
-		this.context.fillStyle = "red";
+		this.drawOrb(
+			hpMax,
+			hpCurrent,
+			0 + this.radius,
+			this.y - this.radius,
+			"red"
+		);
+	}
+	drawConsole() {
+		let img = new Image();
+		img.src = "../tiles/Stone_Floor.png";
+		this.context.drawImage(img, 0, this.y - 75, this.x, 300);
+	}
+	drawOrb(statMax, statCurrent, x, y, color) {
+		if (color === "white") {
+			this.context.globalAlpha = 0.5;
+		}
+		this.context.beginPath();
+		this.context.arc(
+			x,
+			y,
+			this.radius,
+			(1.5 + (1 - statCurrent / statMax)) * Math.PI,
+			(3.5 - (1 - statCurrent / statMax)) * Math.PI
+		);
+		this.context.fillStyle = color;
 		this.context.fill();
-
-		// End HP orb-------------------------------------------------------------------------
+		if (color === "white") {
+			this.context.globalAlpha = 1;
+		}
 	}
 }

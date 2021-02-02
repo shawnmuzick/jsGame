@@ -275,7 +275,7 @@ export class Necromancer extends Player {
 		this.pets = [];
 		this.stats = {
 			hp: { max: 10, current: 10 },
-			mp: { max: 10, current: 10 },
+			mp: { max: 20, current: 20 },
 			vit: 10,
 			dex: 5,
 			str: 5,
