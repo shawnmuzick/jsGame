@@ -1,3 +1,5 @@
+let img = new Image();
+img.src = "../tiles/Stone_Floor.png";
 export class HUD {
 	constructor({ context, x, y }) {
 		this.context = context;
@@ -40,9 +42,17 @@ export class HUD {
 		);
 	}
 	drawConsole() {
-		let img = new Image();
-		img.src = "../tiles/Stone_Floor.png";
-		this.context.drawImage(img, 0, this.y - 75, this.x, 300);
+		this.context.drawImage(
+			img,
+			0,
+			0,
+			this.x,
+			300,
+			0,
+			this.y - 75,
+			this.x,
+			300
+		);
 	}
 	drawOrb(statMax, statCurrent, x, y, color) {
 		if (color === "white") {

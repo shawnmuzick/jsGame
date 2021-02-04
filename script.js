@@ -1,22 +1,23 @@
 // skele sprite playground
-import { Skeleton, Necromancer } from './classes/player.js';
-import { World } from './classes/world.js';
+import { Skeleton, Necromancer } from "./classes/player.js";
+import { StatMenu } from "./classes/Menu.js";
+import { World } from "./classes/world.js";
 
-const canvas = document.createElement('canvas');
-canvas.classList.add('canvas');
+const canvas = document.createElement("canvas");
+canvas.classList.add("canvas");
 canvas.width = 800;
 canvas.height = 800;
-const context = canvas.getContext('2d');
+const context = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
 document.body.appendChild(canvas);
-
+let menu = new StatMenu(centerX, centerY, context);
 let players = [];
 players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
 let worldImg = new Image();
-worldImg.src = './LPC_forest/forest_tiles.png';
+worldImg.src = "./LPC_forest/forest_tiles.png";
 let world = new World(
 	worldImg,
 	0,
@@ -46,6 +47,8 @@ function paint() {
 		}
 		//draw player last so they appear above pets in an overlap
 		p.draw();
+		// if the menu is open, draw it
+		if (menu.open) menu.draw(p.stats);
 	});
 }
 
@@ -53,23 +56,28 @@ function keydown(e, players) {
 	players.forEach((player) => {
 		player.isIdle = false;
 		switch (e.key) {
-			case 'ArrowRight':
+			case "ArrowRight":
 				player.right();
 				break;
-			case 'ArrowLeft':
+			case "ArrowLeft":
 				player.left();
 				break;
-			case 'ArrowUp':
+			case "ArrowUp":
 				player.up();
 				break;
-			case 'ArrowDown':
+			case "ArrowDown":
 				player.down();
 				break;
-			case 's':
+			case "s":
 				player.spell?.();
 				break;
-			case ' ':
+			case " ":
 				player.mele();
+				break;
+			case "t":
+				menu.open = !menu.open;
+				//prevent walking while opening menu
+				player.idle();
 				break;
 			default:
 				player.idle();
@@ -89,6 +97,6 @@ function keyUp() {
 	});
 }
 
-document.addEventListener('keydown', (e) => keydown(e, players));
-document.addEventListener('keyup', keyUp);
+document.addEventListener("keydown", (e) => keydown(e, players));
+document.addEventListener("keyup", keyUp);
 window.onload = setInterval(paint, 1000 / 15);
