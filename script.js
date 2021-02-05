@@ -1,6 +1,6 @@
 // skele sprite playground
-import { Skeleton, Necromancer } from "./classes/player.js";
-import { StatMenu } from "./classes/Menu.js";
+import { Skeleton, Necromancer } from "./classes/actors/player.js";
+import { StatMenu } from "./classes/UI/Menu.js";
 import { World } from "./classes/world.js";
 
 const canvas = document.createElement("canvas");

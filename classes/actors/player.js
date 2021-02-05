@@ -1,68 +1,6 @@
-import { HUD } from "./HUD.js";
-
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min) + min);
-}
-
-function wander() {
-	//if out of summoner x range, don't let them wander further
-	let leftLimit =
-		this.x <= this.summoner.x &&
-		this.summoner.x - this.x > this.summoner.petRange;
-	let rightLimit =
-		this.x >= this.summoner.x &&
-		this.x - this.summoner.x > this.summoner.petRange;
-	let upLimit =
-		this.y <= this.summoner.y &&
-		this.summoner.y - this.y > this.summoner.petRange;
-	let downLimit =
-		this.y >= this.summoner.y &&
-		this.y - this.summoner.y > this.summoner.petRange;
-
-	let direction = getRandomInt(8, 12);
-	if (upLimit && direction === this.actions.up) {
-		direction += 2;
-	}
-	if (leftLimit && direction === this.actions.left) {
-		direction += 2;
-	}
-	if (downLimit && direction === this.actions.down) {
-		direction -= 2;
-	}
-	if (rightLimit && direction === this.actions.right) {
-		direction -= 2;
-	}
-	this.frameY = direction * this.height;
-	switch (direction) {
-		// in order: up, left, down, right
-		case 8:
-			this.y -= this.speed;
-			break;
-		case 9:
-			this.x -= this.speed;
-			break;
-		case 10:
-			this.y += this.speed;
-			break;
-		case 11:
-			this.x += this.speed;
-			break;
-		default:
-			this.y -= this.speed;
-	}
-	return;
-}
-
-function getSprite(name) {
-	const sprites = {
-		skeleton: "./sprites/skeleton.png",
-		necromancer: "./sprites/necromancer.png",
-	};
-	const sprite = new Image();
-	sprite.src = sprites[name];
-	return sprite;
-}
-
+import { HUD } from "../UI/HUD.js";
+import { summonSkeleton } from "./spells/spells.js";
+import { getSprite } from "./util.js";
 class Player {
 	constructor({
 		img,
@@ -118,53 +56,60 @@ class Player {
 	}
 
 	draw() {
+		let offset = 1;
+		let updateParams = [0];
 		let meleFrames = [21, 24, 27, 30];
 		if (meleFrames.includes(this.frameY / this.height)) {
 			if (this.frameX % 3 !== 0) this.frameX = 0;
+			offset = 3;
+			updateParams.push(5);
 			this.context.drawImage(
 				this.img,
 				this.frameX,
 				this.frameY,
-				this.width * 3,
-				this.height * 3,
-				this.x - this.width - this.scaleWidth,
-				this.y - this.width - this.scaleHeight,
-				this.scaleWidth * 3,
-				this.scaleHeight * 3
+				this.width * offset,
+				this.height * offset,
+				this.x -  this.scaleWidth,
+				this.y -  this.scaleHeight,
+				this.scaleWidth * offset,
+				this.scaleHeight * offset
 			);
-			this.update(0, 5, 3);
 		} else {
 			let spellFrames = [0, 1, 2, 3];
 			this.context.drawImage(
 				this.img,
 				this.frameX,
 				this.frameY,
-				this.width,
-				this.height,
+				this.width * offset,
+				this.height * offset,
 				this.x - this.width,
 				this.y - this.width,
-				this.scaleWidth,
-				this.scaleHeight
+				this.scaleWidth * offset,
+				this.scaleHeight * offset
 			);
 			if (this.isIdle) {
 				//update for idle
-				this.update(0, 0);
+				updateParams.push(0);
 			} else if (
 				spellFrames.includes(this.frameY / this.height)
 			) {
 				//update for spell cast
-				this.update(0, 6);
+				updateParams.push(6);
 			} else {
 				//general update
-				this.update();
+				updateParams.push(8);
 			}
 		}
-		this.HUD.draw(
-			this.stats.mp.max,
-			this.stats.mp.current,
-			this.stats.hp.max,
-			this.stats.hp.current
-		);
+		this.update(...updateParams, offset);
+		// only draw the HUD if the actor should have one
+		if (this.HUD) {
+			this.HUD.draw(
+				this.stats.mp.max,
+				this.stats.mp.current,
+				this.stats.hp.max,
+				this.stats.hp.current
+			);
+		}
 	}
 
 	update(start = 0, end = 8, offset = 1) {
@@ -306,33 +251,6 @@ export class Necromancer extends Player {
 		) {
 			this.frameY = this.actions.spellRight * this.height;
 		}
-
-		//pets should wander on idle
-		let pet = new Skeleton({
-			context: this.context,
-			x: this.x,
-			y: this.y,
-		});
-		pet.idle = wander;
-		pet.stats = {
-			hp: this.stats.hp / 4,
-			mp: this.stats.mp / 4,
-			vit: this.stats.vit / 4,
-			dex: this.stats.dex / 4,
-			str: this.stats.str / 4,
-			mag: this.stats.mag / 4,
-			exp: null,
-			lvl: this.stats.lvl,
-			pts: null,
-		};
-		pet.HUD = {};
-		pet.HUD.draw = () => {
-			return;
-		};
-
-		//pets should track their summoner
-		pet.summoner = this;
-		this.pets.push(pet);
-		this.stats.mp.current -= 2;
+		summonSkeleton(this);
 	}
 }
