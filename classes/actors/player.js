@@ -69,8 +69,8 @@ class Player {
 				this.frameY,
 				this.width * offset,
 				this.height * offset,
-				this.x -  this.scaleWidth,
-				this.y -  this.scaleHeight,
+				this.x - this.width - this.scaleWidth,
+				this.y - this.width - this.scaleHeight,
 				this.scaleWidth * offset,
 				this.scaleHeight * offset
 			);
