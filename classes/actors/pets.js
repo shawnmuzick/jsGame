@@ -1,26 +1,34 @@
 import { getRandomInt } from "./util.js";
+
 export function wander(caller) {
 	//if out of summoner x range, don't let them wander further
-	let leftLimit = caller.summoner.x - caller.x > caller.summoner.petRange;
-	let rightLimit =
-		caller.x - caller.summoner.x > caller.summoner.petRange;
-	let upLimit = caller.summoner.y - caller.y > caller.summoner.petRange;
-	let downLimit = caller.y - caller.summoner.y > caller.summoner.petRange;
+	let xLimit =
+		Math.abs(caller.summoner.x - caller.x) >
+		caller.summoner.petRange;
+	let yLimit =
+		Math.abs(caller.summoner.y - caller.y) >
+		caller.summoner.petRange;
 
-	let direction = getRandomInt(8, 12);
-	if (upLimit && direction === caller.actions.up) {
-		direction += 2;
+	let direction = caller.frameY / caller.height;
+	// if we hit either of the limits
+	if (xLimit || yLimit) {
+		console.log('limit')
+		let tmp = getRandomInt(8, 12);
+		//reroll until we get a new one, preferably opposite direction
+		while (tmp === direction && Math.abs(tmp - direction) >= 2) {
+			tmp = getRandomInt(8, 12);
+		}
+		direction = tmp;
 	}
-	if (leftLimit && direction === caller.actions.left) {
-		direction += 2;
+	// if we were attacking when this gets called
+	if (Array.from(caller.swordMap.values()).includes(caller.frameY)) {
+		caller.frameY = caller.idleMap.get(
+			caller.frameY / caller.height
+		);
+		caller.frameX = 0;
+	} else {
+		caller.frameY = direction * caller.height;
 	}
-	if (downLimit && direction === caller.actions.down) {
-		direction -= 2;
-	}
-	if (rightLimit && direction === caller.actions.right) {
-		direction -= 2;
-	}
-	caller.frameY = direction * caller.height;
 	switch (direction) {
 		// in order: up, left, down, right
 		case 8:

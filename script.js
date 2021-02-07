@@ -92,7 +92,9 @@ function keyUp() {
 	players.forEach((p) => {
 		p.idle();
 		if (p.pets?.length > 0) {
-			p.pets.forEach((pet) => pet.idle());
+			p.pets.forEach((pet) => {
+				pet.idle();
+			});
 		}
 	});
 }
