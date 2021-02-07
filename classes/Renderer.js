@@ -1,6 +1,8 @@
 import { Player } from './actors/player.js';
 import { Menu } from './UI/Menu.js';
 import { HUD } from './UI/HUD.js';
+import { World } from './world.js';
+import { walkMap, swordMap, spellMap, idleMap } from './actors/actionMaps.js';
 export class Renderer {
 	constructor(context) {
 		this.context = context;
@@ -10,6 +12,7 @@ export class Renderer {
 		if (obj instanceof Player) this.drawPlayer(obj);
 		if (obj instanceof Menu) this.drawMenu(obj);
 		if (obj instanceof HUD) this.drawHUD(obj, params);
+		if (obj instanceof World) this.drawWorld(obj);
 	}
 
 	drawPlayer(obj) {
@@ -18,7 +21,7 @@ export class Renderer {
 		let scaleX = 0;
 		let scaleY = 0;
 		// if we have a sword and are attacking
-		if (obj.swordMap && Array.from(obj.swordMap.values()).includes(obj.frameY)) {
+		if (Array.from(swordMap.values()).includes(obj.frameY)) {
 			scaleX = obj.scaleWidth;
 			scaleY = obj.scaleHeight;
 			offset = 3;
@@ -28,7 +31,7 @@ export class Renderer {
 		} else if (obj.isIdle) {
 			updateParams.push(0);
 			// if we have spells and are casting
-		} else if (obj.spellMap && Array.from(obj.spellMap.values()).includes(obj.frameY)) {
+		} else if (Array.from(spellMap.values()).includes(obj.frameY)) {
 			updateParams.push(6);
 			// otherwise general update
 		} else {
@@ -51,11 +54,75 @@ export class Renderer {
 	drawHUD(obj, params) {
 		const { hpMax, hpCurrent, mpMax, mpCurrent } = params;
 		// draw the dash area
-		obj.drawConsole();
+		obj.drawConsole(this.context);
 		// draw hp/mp globes with a transparent white "glass" behind them
-		obj.drawOrb(mpMax, mpMax, obj.x - obj.radius, obj.y - obj.radius, 'white');
-		obj.drawOrb(mpMax, mpCurrent, obj.x - obj.radius, obj.y - obj.radius, 'blue');
-		obj.drawOrb(hpMax, hpMax, 0 + obj.radius, obj.y - obj.radius, 'white');
-		obj.drawOrb(hpMax, hpCurrent, 0 + obj.radius, obj.y - obj.radius, 'red');
+		obj.drawOrb(
+			this.context,
+			mpMax,
+			mpMax,
+			obj.x - obj.radius,
+			obj.y - obj.radius,
+			'white'
+		);
+		obj.drawOrb(
+			this.context,
+			mpMax,
+			mpCurrent,
+			obj.x - obj.radius,
+			obj.y - obj.radius,
+			'blue'
+		);
+		obj.drawOrb(
+			this.context,
+			hpMax,
+			hpMax,
+			0 + obj.radius,
+			obj.y - obj.radius,
+			'white'
+		);
+		obj.drawOrb(
+			this.context,
+			hpMax,
+			hpCurrent,
+			0 + obj.radius,
+			obj.y - obj.radius,
+			'red'
+		);
+	}
+
+	drawWorld(obj) {
+		//render out the world tiles
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
+				this.context.drawImage(
+					obj.img,
+					obj.grid[i][j].x * obj.width,
+					obj.grid[i][j].y * obj.width,
+					obj.width,
+					obj.height,
+					obj.scaleWidth * i,
+					obj.scaleHeight * j,
+					//fixes breaks/seams
+					obj.scaleWidth + 2,
+					obj.scaleHeight + 2
+				);
+				//if drew plain grass in the step above
+				if (obj.grid[i][j].geofeat !== false) {
+					//add geographic feature on top of it
+					this.context.drawImage(
+						obj.img,
+						obj.grid[i][j].geoFeat.x * obj.width,
+						obj.grid[i][j].geoFeat.y * obj.width,
+						obj.width,
+						obj.height,
+						obj.scaleWidth * i,
+						obj.scaleHeight * j,
+						//fixes breaks/seams
+						obj.scaleWidth + 2,
+						obj.scaleHeight + 2
+					);
+				}
+			}
+		}
 	}
 }

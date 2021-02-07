@@ -1,18 +1,13 @@
-import { getRandomInt } from "./util.js";
-
+import { getRandomInt } from './util.js';
+import { walkMap, swordMap, spellMap, idleMap } from './actionMaps.js';
 export function wander(caller) {
 	//if out of summoner x range, don't let them wander further
-	let xLimit =
-		Math.abs(caller.summoner.x - caller.x) >
-		caller.summoner.petRange;
-	let yLimit =
-		Math.abs(caller.summoner.y - caller.y) >
-		caller.summoner.petRange;
+	let xLimit = Math.abs(caller.summoner.x - caller.x) > caller.summoner.petRange;
+	let yLimit = Math.abs(caller.summoner.y - caller.y) > caller.summoner.petRange;
 
 	let direction = caller.frameY / caller.height;
 	// if we hit either of the limits
 	if (xLimit || yLimit) {
-		console.log('limit')
 		let tmp = getRandomInt(8, 12);
 		//reroll until we get a new one, preferably opposite direction
 		while (tmp === direction && Math.abs(tmp - direction) >= 2) {
@@ -21,10 +16,8 @@ export function wander(caller) {
 		direction = tmp;
 	}
 	// if we were attacking when this gets called
-	if (Array.from(caller.swordMap.values()).includes(caller.frameY)) {
-		caller.frameY = caller.idleMap.get(
-			caller.frameY / caller.height
-		);
+	if (Array.from(swordMap.values()).includes(caller.frameY)) {
+		caller.frameY = idleMap.get(caller.frameY / caller.height);
 		caller.frameX = 0;
 	} else {
 		caller.frameY = direction * caller.height;

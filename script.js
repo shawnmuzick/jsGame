@@ -1,5 +1,5 @@
 // skele sprite playground
-import { Skeleton, Necromancer } from './classes/actors/player.js';
+import { Necromancer } from './classes/actors/player.js';
 import { Renderer } from './classes/Renderer.js';
 import { StatMenu } from './classes/UI/Menu.js';
 import { World } from './classes/world.js';
@@ -18,27 +18,19 @@ let menu = new StatMenu(centerX, centerY, context);
 let players = [];
 players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
-let worldImg = new Image();
-worldImg.src = './LPC_forest/forest_tiles.png';
-let world = new World(
-	worldImg,
-	0,
-	0,
-	32,
-	32,
-	0,
-	0,
-	Math.round(canvas.width / 8),
-	Math.round(canvas.height / 8),
-	context
-);
+let world = new World({
+	cWidth: Math.round(canvas.width / 8),
+	cHeight: Math.round(canvas.height / 8),
+});
 function clear() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function paint() {
-	clear();
-	world.draw();
+function drawWorld() {
+	renderer.draw(world);
+}
+
+function drawActors() {
 	players.forEach((p) => {
 		if (p.pets?.length > 0) {
 			p.pets.forEach((pet) => renderer.draw(pet));
@@ -59,6 +51,12 @@ function paint() {
 				mpCurrent: p.stats.mp.current,
 			});
 	});
+}
+
+function paint() {
+	clear();
+	drawWorld();
+	drawActors();
 }
 
 function keydown(e, players) {

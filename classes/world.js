@@ -1,16 +1,16 @@
+let img = new Image();
+img.src = './LPC_forest/forest_tiles.png';
 export class World {
-	constructor(
-		img,
-		spriteX,
-		spriteY,
-		spriteWidth,
-		spriteHeight,
-		cx,
-		cy,
+	constructor({
+		spriteX = 0,
+		spriteY = 0,
+		spriteWidth = 32,
+		spriteHeight = 32,
+		cx = 0,
+		cy = 0,
 		cWidth,
 		cHeight,
-		context
-	) {
+	}) {
 		this.img = img;
 		this.spriteX = spriteX;
 		this.spriteY = spriteY;
@@ -20,48 +20,11 @@ export class World {
 		this.yPosition = cy;
 		this.scaleWidth = cWidth;
 		this.scaleHeight = cHeight;
-		this.context = context;
 		this.grid = [[], [], [], [], [], [], [], [], []];
 		//fill the visible world with random grass tiles
 		for (let i = 0; i < 9; i++) {
 			for (let j = 0; j < 9; j++) {
 				this.grid[i][j] = this.getRandomTile(5, 3);
-			}
-		}
-	}
-
-	draw() {
-		//render out the world tiles
-		for (let i = 0; i < 9; i++) {
-			for (let j = 0; j < 9; j++) {
-				this.context.drawImage(
-					this.img,
-					this.grid[i][j].x * this.width,
-					this.grid[i][j].y * this.width,
-					this.width,
-					this.height,
-					this.scaleWidth * i,
-					this.scaleHeight * j,
-					//fixes breaks/seams
-					this.scaleWidth + 2,
-					this.scaleHeight + 2
-				);
-				//if drew plain grass in the step above
-				if (this.grid[i][j].geofeat !== false) {
-					//add geographic feature on top of it
-					this.context.drawImage(
-						this.img,
-						this.grid[i][j].geoFeat.x * this.width,
-						this.grid[i][j].geoFeat.y * this.width,
-						this.width,
-						this.height,
-						this.scaleWidth * i,
-						this.scaleHeight * j,
-						//fixes breaks/seams
-						this.scaleWidth + 2,
-						this.scaleHeight + 2
-					);
-				}
 			}
 		}
 	}
