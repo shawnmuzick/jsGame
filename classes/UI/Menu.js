@@ -1,6 +1,6 @@
 let img = new Image();
-img.src = "../tiles/Stone_Floor.png";
-class Menu {
+img.src = '../tiles/Stone_Floor.png';
+export class Menu {
 	constructor(x, y, context, width, height) {
 		this.x = x;
 		this.y = y;
@@ -30,13 +30,13 @@ export class StatMenu extends Menu {
 		);
 		// loop through stats and print them out
 		let i = 40;
-		this.context.font = "20px serif";
-		this.context.fillStyle = "yellow";
-		let string = "";
+		this.context.font = '20px serif';
+		this.context.fillStyle = 'yellow';
+		let string = '';
 		for (const stat in data) {
-			if (stat === "hp") {
+			if (stat === 'hp') {
 				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
-			} else if (stat === "mp") {
+			} else if (stat === 'mp') {
 				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
 			} else {
 				string = `${stat}: ${data[stat]}`;
