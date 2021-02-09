@@ -48,3 +48,20 @@ export class World {
 		return { x, y, geoFeat };
 	}
 }
+
+export class FullWorld{
+	constructor(obj){
+		this.world = [];
+		this.populate(obj);
+	}
+
+	populate(obj){
+		for(let i = 0; i < 9; i++){
+			let arr = [];
+			for(let j = 0; j < 9; j++){
+				arr.push(new World(obj));
+			}
+			this.world.push(arr);
+		}
+	}
+}

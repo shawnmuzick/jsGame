@@ -2,7 +2,7 @@
 import { Necromancer } from './classes/actors/player.js';
 import { Renderer } from './classes/Renderer.js';
 import { StatMenu } from './classes/UI/Menu.js';
-import { World } from './classes/world.js';
+import { FullWorld } from './classes/world.js';
 
 const canvas = document.createElement('canvas');
 canvas.classList.add('canvas');
@@ -18,7 +18,7 @@ let menu = new StatMenu(centerX, centerY, context);
 let players = [];
 players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
-let world = new World({
+let map = new FullWorld({
 	cWidth: Math.round(canvas.width / 8),
 	cHeight: Math.round(canvas.height / 8),
 });
@@ -27,7 +27,7 @@ function clear() {
 }
 
 function drawWorld() {
-	renderer.draw(world);
+	renderer.draw(map.world[0][0]);
 }
 
 function drawActors() {
@@ -39,10 +39,8 @@ function drawActors() {
 		if (p.isIdle === true) {
 			p.pets.forEach((pet) => pet.idle());
 		}
-		//draw player last so they appear above pets in an overlap
 		renderer.draw(p);
-		// if the menu is open, draw it
-		if (menu.open) menu.draw(p.stats);
+		renderer.draw(menu, p.stats);
 		if (p.HUD)
 			renderer.draw(p.HUD, {
 				hpMax: p.stats.hp.max,

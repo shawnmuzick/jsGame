@@ -1,18 +1,19 @@
-import { Player } from './actors/player.js';
-import { Menu } from './UI/Menu.js';
-import { HUD } from './UI/HUD.js';
-import { World } from './world.js';
-import { walkMap, swordMap, spellMap, idleMap } from './actors/actionMaps.js';
+import { Player } from "./actors/player.js";
+import { Menu, StatMenu } from "./UI/Menu.js";
+import { HUD } from "./UI/HUD.js";
+import { World } from "./world.js";
+import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 export class Renderer {
 	constructor(context) {
 		this.context = context;
+		
 	}
 
 	draw(obj, params) {
 		if (obj instanceof Player) this.drawPlayer(obj);
-		if (obj instanceof Menu) this.drawMenu(obj);
 		if (obj instanceof HUD) this.drawHUD(obj, params);
 		if (obj instanceof World) this.drawWorld(obj);
+		if (obj instanceof StatMenu) this.drawStatMenu(obj, params);
 	}
 
 	drawPlayer(obj) {
@@ -62,7 +63,7 @@ export class Renderer {
 			mpMax,
 			obj.x - obj.radius,
 			obj.y - obj.radius,
-			'white'
+			"white"
 		);
 		obj.drawOrb(
 			this.context,
@@ -70,7 +71,7 @@ export class Renderer {
 			mpCurrent,
 			obj.x - obj.radius,
 			obj.y - obj.radius,
-			'blue'
+			"blue"
 		);
 		obj.drawOrb(
 			this.context,
@@ -78,7 +79,7 @@ export class Renderer {
 			hpMax,
 			0 + obj.radius,
 			obj.y - obj.radius,
-			'white'
+			"white"
 		);
 		obj.drawOrb(
 			this.context,
@@ -86,7 +87,7 @@ export class Renderer {
 			hpCurrent,
 			0 + obj.radius,
 			obj.y - obj.radius,
-			'red'
+			"red"
 		);
 	}
 
@@ -111,8 +112,10 @@ export class Renderer {
 					//add geographic feature on top of it
 					this.context.drawImage(
 						obj.img,
-						obj.grid[i][j].geoFeat.x * obj.width,
-						obj.grid[i][j].geoFeat.y * obj.width,
+						obj.grid[i][j].geoFeat.x *
+							obj.width,
+						obj.grid[i][j].geoFeat.y *
+							obj.width,
 						obj.width,
 						obj.height,
 						obj.scaleWidth * i,
@@ -123,6 +126,39 @@ export class Renderer {
 					);
 				}
 			}
+		}
+	}
+
+	drawStatMenu(obj, data) {
+		// only draw if window is open
+		if (!obj.open) return;
+		// draw the stat window
+		this.context.drawImage(
+			obj.img,
+			obj.x - obj.width / 2,
+			obj.y - obj.height / 2,
+			obj.width,
+			obj.height
+		);
+		// loop through stats and print them out
+		let i = 40;
+		this.context.font = "20px serif";
+		this.context.fillStyle = "yellow";
+		let string = "";
+		for (const stat in data) {
+			if (stat === "hp") {
+				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
+			} else if (stat === "mp") {
+				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
+			} else {
+				string = `${stat}: ${data[stat]}`;
+			}
+			this.context.fillText(
+				string,
+				obj.x - obj.width / 2 + 20,
+				obj.y - obj.height / 2 + i
+			);
+			i += 30;
 		}
 	}
 }

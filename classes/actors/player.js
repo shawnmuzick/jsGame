@@ -1,10 +1,17 @@
-import { HUD } from '../UI/HUD.js';
-import { summonSkeleton } from './spells/spells.js';
-import { getSprite } from './util.js';
-import { walkMap, swordMap, spellMap, idleMap } from './actionMaps.js';
-console.log(swordMap);
+import { HUD } from "../UI/HUD.js";
+import { summonSkeleton } from "./spells/spells.js";
+import { getSpriteSheet } from "./util.js";
+import { walkMap, swordMap, spellMap, idleMap } from "./actionMaps.js";
 export class Player {
-	constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0 }) {
+	constructor({
+		img,
+		frameX = 0,
+		frameY = 10,
+		width = 64,
+		height = 64,
+		x = 0,
+		y = 0,
+	}) {
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY * height;
@@ -44,22 +51,22 @@ export class Player {
 	}
 
 	up() {
-		this.frameY = walkMap.get('up');
+		this.frameY = walkMap.get("up");
 		this.y -= this.speed;
 	}
 
 	left() {
-		this.frameY = walkMap.get('left');
+		this.frameY = walkMap.get("left");
 		this.x -= this.speed;
 	}
 
 	down() {
-		this.frameY = walkMap.get('down');
+		this.frameY = walkMap.get("down");
 		this.y += this.speed;
 	}
 
 	right() {
-		this.frameY = walkMap.get('right');
+		this.frameY = walkMap.get("right");
 		this.x += this.speed;
 	}
 
@@ -70,26 +77,10 @@ export class Player {
 	}
 
 	mele() {
-		//check which direction we're facing so we swing in that direction
-		if (this.frameY === walkMap.get('up')) {
-			this.frameY = swordMap.get('up');
-			this.pets.forEach((p) => {
-				p.frameY = swordMap.get('up');
-			});
-		} else if (this.frameY === walkMap.get('left')) {
-			this.frameY = swordMap.get('left');
-			this.pets.forEach((p) => {
-				p.frameY = swordMap.get('left');
-			});
-		} else if (this.frameY === walkMap.get('down')) {
-			this.frameY = swordMap.get('down');
-			this.pets.forEach((p) => {
-				p.frameY = swordMap.get('down');
-			});
-		} else if (this.frameY === walkMap.get('right')) {
-			this.frameY = swordMap.get('right');
-			this.pets.forEach((p) => {
-				p.frameY = swordMap.get('right');
+		if (walkMap.has(this.frameY)) {
+			this.frameY = swordMap.get(this.frameY);
+			this.pets?.forEach((p) => {
+				p.frameY = swordMap.get(p.frameY);
 			});
 		}
 	}
@@ -101,7 +92,7 @@ export class Player {
 
 export class Skeleton extends Player {
 	constructor(obj) {
-		obj.img = getSprite('skeleton');
+		obj.img = getSpriteSheet("skeleton");
 		super(obj);
 		this.speed = 3;
 		this.stats = {
@@ -120,7 +111,7 @@ export class Skeleton extends Player {
 
 export class Necromancer extends Player {
 	constructor(obj) {
-		obj.img = getSprite('necromancer');
+		obj.img = getSpriteSheet("necromancer");
 		super(obj);
 		this.pets = [];
 		this.stats = {
@@ -140,16 +131,8 @@ export class Necromancer extends Player {
 		// if not enough mana, return
 		if (this.stats.mp.current <= 0) return;
 
-		//check which direction we're facing so we swing in that direction
-		if (this.frameY === walkMap.get('up')) {
-			this.frameY = spellMap.get('up');
-		} else if (this.frameY === walkMap.get('left')) {
-			this.frameY = spellMap.get('left');
-		} else if (this.frameY === walkMap.get('down')) {
-			this.frameY = spellMap.get('down');
-		} else if (this.frameY === walkMap.get('right')) {
-			this.frameY = spellMap.get('right');
-		}
+		if (walkMap.has(this.frameY))
+			this.frameY = spellMap.get(this.frameY);
 		summonSkeleton(this);
 	}
 }

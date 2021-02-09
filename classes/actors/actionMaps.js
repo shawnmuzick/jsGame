@@ -5,28 +5,49 @@ let right = 11;
 
 function WalkMap(size) {
 	let map = new Map();
-	map.set('up', up * size);
-	map.set('left', left * size);
-	map.set('down', down * size);
-	map.set('right', right * size);
+	map.set("up", up * size);
+	map.set("left", left * size);
+	map.set("down", down * size);
+	map.set("right", right * size);
+	// alias for direct use in keyDown triggers - remove later if unused
+	map.set("ArrowUp", up * size);
+	map.set("ArrowLeft", left * size);
+	map.set("ArrowRight", down * size);
+	map.set("ArrowDown", right * size);
+	// also set the inverse to search for either
+	map.set(up * size, "up");
+	map.set(left * size, "left");
+	map.set(down * size, "down");
+	map.set(right * size, "right");
+
 	return map;
 }
 
 function SwordMap(size) {
 	let map = new Map();
-	map.set('up', 21 * size);
-	map.set('left', 24 * size);
-	map.set('down', 27 * size);
-	map.set('right', 30 * size);
+	map.set("up", 21 * size);
+	map.set("left", 24 * size);
+	map.set("down", 27 * size);
+	map.set("right", 30 * size);
+	// search a walk frame, return equivalent spell frame
+	map.set(up * size, 21 * size);
+	map.set(left * size, 24 * size);
+	map.set(down * size, 27 * size);
+	map.set(right * size, 30 * size);
 	return map;
 }
 
 function SpellMap(size) {
 	let map = new Map();
-	map.set('up', 0 * size);
-	map.set('left', 1 * size);
-	map.set('down', 2 * size);
-	map.set('right', 3 * size);
+	map.set("up", 0 * size);
+	map.set("left", 1 * size);
+	map.set("down", 2 * size);
+	map.set("right", 3 * size);
+	// search a walk frame, return equivalent spell frame
+	map.set(up * size, 0 * size);
+	map.set(left * size, 1 * size);
+	map.set(down * size, 2 * size);
+	map.set(right * size, 3 * size);
 	return map;
 }
 function IdleMap(size) {

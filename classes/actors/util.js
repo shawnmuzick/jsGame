@@ -4,7 +4,7 @@ export function getRandomInt(min, max) {
 }
 
 
-export function getSprite(name) {
+export function getSpriteSheet(name) {
 	const sprites = {
 		skeleton: "./sprites/skeleton.png",
 		necromancer: "./sprites/necromancer.png",
