@@ -70,6 +70,8 @@ export class FullWorld {
 	}
 
 	checkPosition(player) {
+		//check if the player has gone over one of the edges
+		//if so, reset that cooridnate and move a space on the world grid
 		const { x, y, width } = player;
 		// leftmost
 		if (x + width < 0 && this.currentSpaceX > 0) {
@@ -84,7 +86,6 @@ export class FullWorld {
 		} else if (y + width < 0 && this.currentSpaceY > 0) {
 			this.currentSpaceY--;
 			player.y = worldSize - player.width
-			console.log(this.currentSpaceY)
 			// downmost
 		} else if (y > worldSize && this.currentSpaceY < 8) {
 			this.currentSpaceY++;

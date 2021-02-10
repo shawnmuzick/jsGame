@@ -2,26 +2,24 @@
 import { Necromancer } from "./classes/actors/player.js";
 import { Renderer } from "./classes/Renderer.js";
 import { StatMenu } from "./classes/UI/Menu.js";
-import { FullWorld } from "./classes/world.js";
+import { FullWorld } from "./classes/world/world.js";
+import { buildCanvas } from "./DOM/DOMbuilders.js";
 
-const canvas = document.createElement("canvas");
-canvas.classList.add("canvas");
-canvas.width = 800;
-canvas.height = 800;
+const canvas = buildCanvas(800);
 const context = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
-document.body.appendChild(canvas);
 let renderer = new Renderer(context);
 let menu = new StatMenu(centerX, centerY, context);
 let players = [];
 players.push(new Necromancer({ x: centerX, y: centerY, context }));
 
 let map = new FullWorld({
-	cWidth: Math.round(canvas.width / 8),
-	cHeight: Math.round(canvas.height / 8),
+	cWidth: canvas.width / 8,
+	cHeight: canvas.height / 8,
 });
+
 function clear() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -36,7 +34,7 @@ function drawActors() {
 			p.pets.forEach((pet) => renderer.draw(pet));
 		}
 		//if the caster is idle, keep the pets wandering
-		if (p.isIdle === true) {
+		if (p.isIdle) {
 			p.pets.forEach((pet) => pet.idle());
 		}
 		renderer.draw(p);
@@ -54,7 +52,7 @@ function drawActors() {
 function paint() {
 	clear();
 	drawWorld();
-	map.checkPosition(players[0])
+	map.checkPosition(players[0]);
 	drawActors();
 }
 
@@ -81,10 +79,14 @@ function keydown(e, players) {
 				player.mele();
 				break;
 			case "t":
-				menu.open = !menu.open;
-				//prevent walking while opening menu
-				player.idle();
-				break;
+				// check if they're a player, not a pet
+				if (player.HUD) {
+					menu.open = !menu.open;
+					console.log(menu.open);
+					//prevent walking while opening menu
+					player.idle();
+					break;
+				}
 			default:
 				player.idle();
 		}

@@ -1,7 +1,7 @@
 import { Player } from "./actors/player.js";
 import { Menu, StatMenu } from "./UI/Menu.js";
 import { HUD } from "./UI/HUD.js";
-import { World } from "./world.js";
+import { World } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 export class Renderer {
 	constructor(context) {
@@ -130,8 +130,10 @@ export class Renderer {
 	}
 
 	drawStatMenu(obj, data) {
+
 		// only draw if window is open
 		if (!obj.open) return;
+		console.log("open")
 		// draw the stat window
 		this.context.drawImage(
 			obj.img,
