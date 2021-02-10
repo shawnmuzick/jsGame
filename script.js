@@ -1,14 +1,14 @@
 // skele sprite playground
-import { Necromancer } from './classes/actors/player.js';
-import { Renderer } from './classes/Renderer.js';
-import { StatMenu } from './classes/UI/Menu.js';
-import { FullWorld } from './classes/world.js';
+import { Necromancer } from "./classes/actors/player.js";
+import { Renderer } from "./classes/Renderer.js";
+import { StatMenu } from "./classes/UI/Menu.js";
+import { FullWorld } from "./classes/world.js";
 
-const canvas = document.createElement('canvas');
-canvas.classList.add('canvas');
+const canvas = document.createElement("canvas");
+canvas.classList.add("canvas");
 canvas.width = 800;
 canvas.height = 800;
-const context = canvas.getContext('2d');
+const context = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
@@ -27,7 +27,7 @@ function clear() {
 }
 
 function drawWorld() {
-	renderer.draw(map.world[0][0]);
+	renderer.draw(map.world[map.currentSpaceX][map.currentSpaceY]);
 }
 
 function drawActors() {
@@ -54,6 +54,7 @@ function drawActors() {
 function paint() {
 	clear();
 	drawWorld();
+	map.checkPosition(players[0])
 	drawActors();
 }
 
@@ -61,25 +62,25 @@ function keydown(e, players) {
 	players.forEach((player) => {
 		player.isIdle = false;
 		switch (e.key) {
-			case 'ArrowRight':
+			case "ArrowRight":
 				player.right();
 				break;
-			case 'ArrowLeft':
+			case "ArrowLeft":
 				player.left();
 				break;
-			case 'ArrowUp':
+			case "ArrowUp":
 				player.up();
 				break;
-			case 'ArrowDown':
+			case "ArrowDown":
 				player.down();
 				break;
-			case 's':
+			case "s":
 				player.spell?.();
 				break;
-			case ' ':
+			case " ":
 				player.mele();
 				break;
-			case 't':
+			case "t":
 				menu.open = !menu.open;
 				//prevent walking while opening menu
 				player.idle();
@@ -104,6 +105,6 @@ function keyUp() {
 	});
 }
 
-document.addEventListener('keydown', (e) => keydown(e, players));
-document.addEventListener('keyup', keyUp);
+document.addEventListener("keydown", (e) => keydown(e, players));
+document.addEventListener("keyup", keyUp);
 window.onload = setInterval(paint, 1000 / 15);

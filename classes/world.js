@@ -1,5 +1,7 @@
 let img = new Image();
-img.src = './LPC_forest/forest_tiles.png';
+img.src = "./LPC_forest/forest_tiles.png";
+
+let worldSize = 9 * 100;
 export class World {
 	constructor({
 		spriteX = 0,
@@ -49,19 +51,44 @@ export class World {
 	}
 }
 
-export class FullWorld{
-	constructor(obj){
+export class FullWorld {
+	constructor(obj) {
 		this.world = [];
 		this.populate(obj);
+		this.currentSpaceX = 0;
+		this.currentSpaceY = 0;
 	}
 
-	populate(obj){
-		for(let i = 0; i < 9; i++){
+	populate(obj) {
+		for (let i = 0; i < 9; i++) {
 			let arr = [];
-			for(let j = 0; j < 9; j++){
+			for (let j = 0; j < 9; j++) {
 				arr.push(new World(obj));
 			}
 			this.world.push(arr);
+		}
+	}
+
+	checkPosition(player) {
+		const { x, y, width } = player;
+		// leftmost
+		if (x + width < 0 && this.currentSpaceX > 0) {
+			// move right
+			this.currentSpaceX--;
+			player.x = worldSize-player.width
+			// rightmost
+		} else if (x > worldSize && this.currentSpaceX < 8) {
+			this.currentSpaceX++;
+			player.x = 0;
+			// upmost
+		} else if (y + width < 0 && this.currentSpaceY > 0) {
+			this.currentSpaceY--;
+			player.y = worldSize - player.width
+			console.log(this.currentSpaceY)
+			// downmost
+		} else if (y > worldSize && this.currentSpaceY < 8) {
+			this.currentSpaceY++;
+			player.y = 0;
 		}
 	}
 }
