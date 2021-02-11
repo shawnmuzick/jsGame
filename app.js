@@ -83,7 +83,7 @@ function keydown(e, players) {
 				if (player.HUD) {
 					menu.open = !menu.open;
 					console.log(menu.open);
-					//prevent walking while opening menu
+					//prevent walking animation while opening menu
 					player.idle();
 					break;
 				}

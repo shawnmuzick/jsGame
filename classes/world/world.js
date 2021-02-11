@@ -1,25 +1,12 @@
+import { Sprite } from "../actors/player.js";
 let img = new Image();
 img.src = "./LPC_forest/forest_tiles.png";
 
 let worldSize = 9 * 100;
-export class World {
-	constructor({
-		spriteX = 0,
-		spriteY = 0,
-		spriteWidth = 32,
-		spriteHeight = 32,
-		cx = 0,
-		cy = 0,
-		cWidth,
-		cHeight,
-	}) {
-		this.img = img;
-		this.spriteX = spriteX;
-		this.spriteY = spriteY;
-		this.width = spriteWidth;
-		this.height = spriteHeight;
-		this.xPosition = cx;
-		this.yPosition = cy;
+export class World extends Sprite {
+	constructor({ cWidth, cHeight }) {
+		let obj = { width: 32, height: 32, img: img };
+		super(obj);
 		this.scaleWidth = cWidth;
 		this.scaleHeight = cHeight;
 		this.grid = [[], [], [], [], [], [], [], [], []];
@@ -78,9 +65,7 @@ export class FullWorld {
 			// move right
 			this.currentSpaceX--;
 			player.x = worldSize - player.width;
-			player.pets?.forEach(
-				(p) => (p.x = worldSize - p.width)
-			);
+			player.pets?.forEach((p) => (p.x = worldSize - p.width));
 			// rightmost
 		} else if (x > worldSize && this.currentSpaceX < 8) {
 			this.currentSpaceX++;
@@ -90,9 +75,7 @@ export class FullWorld {
 		} else if (y + width < 0 && this.currentSpaceY > 0) {
 			this.currentSpaceY--;
 			player.y = worldSize - player.width;
-			player.pets?.forEach(
-				(p) => (p.y = worldSize - p.width)
-			);
+			player.pets?.forEach((p) => (p.y = worldSize - p.width));
 			// downmost
 		} else if (y > worldSize && this.currentSpaceY < 8) {
 			this.currentSpaceY++;

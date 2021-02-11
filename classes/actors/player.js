@@ -2,16 +2,8 @@ import { HUD } from "../UI/HUD.js";
 import { summonSkeleton } from "./spells/spells.js";
 import { getSpriteSheet } from "./util.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actionMaps.js";
-export class Player {
-	constructor({
-		img,
-		frameX = 0,
-		frameY = 10,
-		width = 64,
-		height = 64,
-		x = 0,
-		y = 0,
-	}) {
+export class Sprite {
+	constructor({ img, frameX = 0, frameY = 0, width = 64, height = 64, x = 0, y = 0 }) {
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY * height;
@@ -19,8 +11,13 @@ export class Player {
 		this.height = height;
 		this.x = x;
 		this.y = y;
-		this.scaleWidth = width * 1.5;
-		this.scaleHeight = height * 1.5;
+	}
+}
+export class Player extends Sprite {
+	constructor(obj) {
+		super(obj);
+		this.scaleWidth = this.width * 1.5;
+		this.scaleHeight = this.height * 1.5;
 		this.speed = 5;
 		this.isIdle = true;
 		this.isLiving = true;
@@ -38,8 +35,8 @@ export class Player {
 			pts: 0,
 		};
 		this.HUD = new HUD({
-			x: x,
-			y: y,
+			x: this.x,
+			y: this.y,
 		});
 	}
 
@@ -131,8 +128,7 @@ export class Necromancer extends Player {
 		// if not enough mana, return
 		if (this.stats.mp.current <= 0) return;
 
-		if (walkMap.has(this.frameY))
-			this.frameY = spellMap.get(this.frameY);
+		if (walkMap.has(this.frameY)) this.frameY = spellMap.get(this.frameY);
 		summonSkeleton(this);
 	}
 }
