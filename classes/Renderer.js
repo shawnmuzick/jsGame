@@ -3,10 +3,11 @@ import { Menu, StatMenu } from "./UI/Menu.js";
 import { HUD } from "./UI/HUD.js";
 import { World } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
+import { getHitBox, getHit } from "./actors/util.js";
+import { getActorsInWorld } from "../app.js";
 export class Renderer {
 	constructor(context) {
 		this.context = context;
-		
 	}
 
 	draw(obj, params) {
@@ -28,6 +29,12 @@ export class Renderer {
 			offset = 3;
 			updateParams.push(5);
 			if (obj.frameX % 3 !== 0) obj.frameX = 0;
+			let actors = getActorsInWorld();
+			actors.forEach((a) => {
+				let bx = getHitBox(a);
+				// need a way to get the position of the weapon, based on obj.frameX
+				console.log(getHit(bx, 0));
+			});
 			// if we're idle
 		} else if (obj.isIdle) {
 			updateParams.push(0);
@@ -112,10 +119,8 @@ export class Renderer {
 					//add geographic feature on top of it
 					this.context.drawImage(
 						obj.img,
-						obj.grid[i][j].geoFeat.x *
-							obj.width,
-						obj.grid[i][j].geoFeat.y *
-							obj.width,
+						obj.grid[i][j].geoFeat.x * obj.width,
+						obj.grid[i][j].geoFeat.y * obj.width,
 						obj.width,
 						obj.height,
 						obj.scaleWidth * i,
@@ -130,10 +135,9 @@ export class Renderer {
 	}
 
 	drawStatMenu(obj, data) {
-
 		// only draw if window is open
 		if (!obj.open) return;
-		console.log("open")
+		console.log("open");
 		// draw the stat window
 		this.context.drawImage(
 			obj.img,

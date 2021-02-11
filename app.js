@@ -13,12 +13,18 @@ const centerY = canvas.height / 2;
 let renderer = new Renderer(context);
 let menu = new StatMenu(centerX, centerY, context);
 let players = [];
-players.push(new Necromancer({ x: centerX, y: centerY, context }));
+let p = new Necromancer({ x: centerX, y: centerY, context });
+players.push(p);
 
-let map = new FullWorld({
+export let map = new FullWorld({
 	cWidth: canvas.width / 8,
 	cHeight: canvas.height / 8,
 });
+map.actors.push(p);
+
+export function getActorsInWorld() {
+	return map.actors;
+}
 
 function clear() {
 	context.clearRect(0, 0, canvas.width, canvas.height);

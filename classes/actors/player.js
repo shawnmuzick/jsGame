@@ -3,7 +3,7 @@ import { summonSkeleton } from "./spells/spells.js";
 import { getSpriteSheet } from "./util.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actionMaps.js";
 export class Sprite {
-	constructor({ img, frameX = 0, frameY = 0, width = 64, height = 64, x = 0, y = 0 }) {
+	constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0 }) {
 		this.img = img;
 		this.frameX = frameX;
 		this.frameY = frameY * height;

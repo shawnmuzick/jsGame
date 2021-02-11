@@ -1,5 +1,7 @@
 import { Skeleton } from "../player.js";
 import { wander } from "../pets.js";
+import {map} from '../../../app.js';
+
 export function summonSkeleton(caller) {
 	//pets should wander on idle
 	let pet = new Skeleton({
@@ -10,6 +12,7 @@ export function summonSkeleton(caller) {
 	//pets should track their summoner
         pet.summoner = caller;
 	caller.pets.push(pet);
+	map.actors.push(pet);
         caller.stats.mp.current -= 2;
         pet.idle = () =>wander(pet);
 	pet.stats = {

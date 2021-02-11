@@ -44,6 +44,7 @@ export class FullWorld {
 		this.populate(obj);
 		this.currentSpaceX = 0;
 		this.currentSpaceY = 0;
+		this.actors = [];
 	}
 
 	populate(obj) {
