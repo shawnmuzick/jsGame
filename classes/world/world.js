@@ -77,19 +77,27 @@ export class FullWorld {
 		if (x + width < 0 && this.currentSpaceX > 0) {
 			// move right
 			this.currentSpaceX--;
-			player.x = worldSize-player.width
+			player.x = worldSize - player.width;
+			player.pets?.forEach(
+				(p) => (p.x = worldSize - p.width)
+			);
 			// rightmost
 		} else if (x > worldSize && this.currentSpaceX < 8) {
 			this.currentSpaceX++;
 			player.x = 0;
+			player.pets?.forEach((p) => (p.x = 0));
 			// upmost
 		} else if (y + width < 0 && this.currentSpaceY > 0) {
 			this.currentSpaceY--;
-			player.y = worldSize - player.width
+			player.y = worldSize - player.width;
+			player.pets?.forEach(
+				(p) => (p.y = worldSize - p.width)
+			);
 			// downmost
 		} else if (y > worldSize && this.currentSpaceY < 8) {
 			this.currentSpaceY++;
 			player.y = 0;
+			player.pets?.forEach((p) => (p.y = 0));
 		}
 	}
 }
