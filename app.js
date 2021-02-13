@@ -1,5 +1,5 @@
 // skele sprite playground
-import { Necromancer } from "./classes/actors/player.js";
+import { Necromancer, Skeleton } from "./classes/actors/player.js";
 import { Renderer } from "./classes/Renderer.js";
 import { StatMenu } from "./classes/UI/Menu.js";
 import { FullWorld } from "./classes/world/world.js";
@@ -35,13 +35,10 @@ function drawWorld() {
 }
 
 function drawActors() {
-	players.forEach((p) => {
-		if (p.pets?.length > 0) {
-			p.pets.forEach((pet) => renderer.draw(pet));
-		}
+	map.actors.forEach((p) => {
 		//if the caster is idle, keep the pets wandering
 		if (p.isIdle) {
-			p.pets.forEach((pet) => pet.idle());
+			p.pets?.forEach((pet) => pet.idle());
 		}
 		renderer.draw(p);
 		renderer.draw(menu, p.stats);

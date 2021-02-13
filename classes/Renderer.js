@@ -5,6 +5,44 @@ import { World } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 import { getHitBox, getHit } from "./actors/util.js";
 import { getActorsInWorld } from "../app.js";
+
+function iterateActors(actors, obj) {
+	for (let i = 0; i < actors.length; i++) {
+		//if actor is the caller of DrawPlayer, skip, because the player can't hit themselves
+		if (actors[i] === obj) {
+			continue;
+			// if the actor is the summoner of the caller of DrawPlayer, skip, because pets shouldn't kill summoner
+		} else if (obj.summoner === actors[i]) {
+			continue;
+		} else {
+			//get the actor's hitbox
+			let bx = getHitBox(actors[i]);
+			// animation frames
+			let options = [192, 384, 576, 768, 960];
+			let cooridnate = options.indexOf(obj.frameX);
+			let newOptions = [
+				{ x: obj.x - obj.width, y: obj.y + 0.5 * obj.height }, //left
+				{ x: obj.x - obj.width, y: obj.y }, //upper left
+				{ x: obj.x + obj.width * 0.5, y: obj.y - obj.height }, //mid
+				{ x: obj.x + obj.width * 0.5, y: obj.y }, //upper right
+				{ x: obj.x + obj.width, y: obj.y + 0.5 * obj.height }, // right
+			];
+			let hit = null;
+			//if the current attack frame was within the hitbox, register the hit
+			if (cooridnate != -1) hit = getHit(bx, newOptions[cooridnate]);
+			//if the hit registered, kill the actor
+			actors[i].isLiving = !hit;
+			console.log(hit);
+			//if actor is dead, remove them from the list of actors
+			if (!actors[i].isLiving) {
+				console.log(i);
+				console.log(actors[i]);
+				actors.splice(i, 1);
+				console.log(actors);
+			}
+		}
+	}
+}
 export class Renderer {
 	constructor(context) {
 		this.context = context;
@@ -29,12 +67,13 @@ export class Renderer {
 			offset = 3;
 			updateParams.push(5);
 			if (obj.frameX % 3 !== 0) obj.frameX = 0;
-			let actors = getActorsInWorld();
-			actors.forEach((a) => {
-				let bx = getHitBox(a);
-				// need a way to get the position of the weapon, based on obj.frameX
-				console.log(getHit(bx, 0));
-			});
+			// only hit check on players for now
+			if (obj.HUD) {
+				//acquire list of actors
+				let actors = getActorsInWorld();
+				//iterate over the actors
+				iterateActors(actors, obj);
+			}
 			// if we're idle
 		} else if (obj.isIdle) {
 			updateParams.push(0);

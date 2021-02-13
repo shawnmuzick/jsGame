@@ -22,10 +22,14 @@ export function getHitBox(actor) {
 }
 
 export function getHit(hitbox, c) {
+	console.log(hitbox);
+	console.log(c);
 	// if we're within the X range of the hitbox
 	let x = false;
 	let y = false;
-	if (c > hitbox.xMin && c < hitbox.xMax) x = true;
-	if (c > hitbox.yMin && c < hitbox.yMax) y = true;
+	if (c.x > hitbox.xMin && c.x < hitbox.xMax) x = true;
+	if (c.y > hitbox.yMin && c.y < hitbox.yMax) y = true;
+	console.log(`x hit is ${x}`)
+	console.log(`y hit is ${y}`)
 	return x && y;
 }
