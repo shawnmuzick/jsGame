@@ -5,6 +5,9 @@ import { World } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 import { getHitBox, getHit } from "./actors/util.js";
 import { getActorsInWorld } from "../app.js";
+function getHitDirection(){
+
+}
 
 function iterateActors(actors, obj) {
 	for (let i = 0; i < actors.length; i++) {
@@ -18,27 +21,58 @@ function iterateActors(actors, obj) {
 			//get the actor's hitbox
 			let bx = getHitBox(actors[i]);
 			// animation frames
-			let options = [192, 384, 576, 768, 960];
-			let cooridnate = options.indexOf(obj.frameX);
-			let newOptions = [
-				{ x: obj.x - obj.width, y: obj.y + 0.5 * obj.height }, //left
-				{ x: obj.x - obj.width, y: obj.y }, //upper left
-				{ x: obj.x + obj.width * 0.5, y: obj.y - obj.height }, //mid
-				{ x: obj.x + obj.width * 0.5, y: obj.y }, //upper right
-				{ x: obj.x + obj.width, y: obj.y + 0.5 * obj.height }, // right
+			let animationFrames = [192, 384, 576, 768, 960];
+			let cooridnate = animationFrames.indexOf(obj.frameX);
+			// facing up, depending on position and frameX
+			let upFrames = [
+				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
+				{ x: obj.x - obj.width * 0.5, y: obj.y - 0.5 * obj.height }, //upper left
+				{ x: obj.x + obj.width * 0.5, y: obj.y - 1.0 * obj.height }, //mid
+				{ x: obj.x + obj.width * 1.5, y: obj.y - 0.5 * obj.height }, //upper right
+				{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
 			];
-			let hit = null;
+			let downFrames = [
+				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
+				{ x: obj.x - obj.width * 0.5, y: obj.y + 1.5 * obj.height }, //lower left
+				{ x: obj.x + obj.width * 0.5, y: obj.y + 2.0 * obj.height }, //mid
+				{ x: obj.x + obj.width * 1.5, y: obj.y + 1.5 * obj.height }, //lower right
+				{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
+			];
+			let leftFrames = [
+				{ x: obj.x - obj.width * 0.25, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x - obj.width * 0.5, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x - obj.width * 0.75, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x - obj.width * 1.25, y: obj.y + 0.5 * obj.height },
+			];
+			let rightFrames = [
+				{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x + obj.width * 0.25, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x + obj.width * 0.5, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x + obj.width * 0.75, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+				{ x: obj.x + obj.width * 1.25, y: obj.y + 0.5 * obj.height },
+			];
 			//if the current attack frame was within the hitbox, register the hit
-			if (cooridnate != -1) hit = getHit(bx, newOptions[cooridnate]);
+			let hit = null;
+
+			if (obj.frameY === 21 * obj.width && cooridnate != -1) {
+				hit = getHit(bx, upFrames[cooridnate]); //if facing up
+			}
+			if (obj.frameY === 24 * obj.width && cooridnate != -1) {
+				hit = getHit(bx, leftFrames[cooridnate]); //if facing up
+			}
+			if (obj.frameY === 27 * obj.width && cooridnate != -1) {
+				hit = getHit(bx, downFrames[cooridnate]); //if facing up
+			}
+			if (obj.frameY === 30 * obj.width && cooridnate != -1) {
+				hit = getHit(bx, rightFrames[cooridnate]); //if facing up
+			}
 			//if the hit registered, kill the actor
 			actors[i].isLiving = !hit;
-			console.log(hit);
 			//if actor is dead, remove them from the list of actors
 			if (!actors[i].isLiving) {
-				console.log(i);
-				console.log(actors[i]);
 				actors.splice(i, 1);
-				console.log(actors);
 			}
 		}
 	}
@@ -66,6 +100,7 @@ export class Renderer {
 			scaleY = obj.scaleHeight;
 			offset = 3;
 			updateParams.push(5);
+			// clean frameX from a previous action sequence
 			if (obj.frameX % 3 !== 0) obj.frameX = 0;
 			// only hit check on players for now
 			if (obj.HUD) {
@@ -102,39 +137,24 @@ export class Renderer {
 		const { hpMax, hpCurrent, mpMax, mpCurrent } = params;
 		// draw the dash area
 		obj.drawConsole(this.context);
-		// draw hp/mp globes with a transparent white "glass" behind them
-		obj.drawOrb(
-			this.context,
-			mpMax,
-			mpMax,
-			obj.x - obj.radius,
-			obj.y - obj.radius,
-			"white"
-		);
-		obj.drawOrb(
-			this.context,
-			mpMax,
-			mpCurrent,
-			obj.x - obj.radius,
-			obj.y - obj.radius,
-			"blue"
-		);
-		obj.drawOrb(
-			this.context,
-			hpMax,
-			hpMax,
-			0 + obj.radius,
-			obj.y - obj.radius,
-			"white"
-		);
-		obj.drawOrb(
-			this.context,
-			hpMax,
-			hpCurrent,
-			0 + obj.radius,
-			obj.y - obj.radius,
-			"red"
-		);
+		let arr = [
+			[mpMax, mpMax],
+			[mpMax, mpCurrent],
+			[hpMax, hpMax],
+			[hpMax, hpCurrent],
+		];
+		// loop through the orbs and drawn them out
+		for (let i = 0; i < obj.orbs.length; i++) {
+			obj.drawOrb(
+				this.context,
+				arr[i][0],
+				arr[i][1],
+				obj.orbs[i].x,
+				obj.orbs[i].y,
+				obj.orbs[i].color,
+				obj.orbs[i].alpha
+			);
+		}
 	}
 
 	drawWorld(obj) {
@@ -176,7 +196,6 @@ export class Renderer {
 	drawStatMenu(obj, data) {
 		// only draw if window is open
 		if (!obj.open) return;
-		console.log("open");
 		// draw the stat window
 		this.context.drawImage(
 			obj.img,
