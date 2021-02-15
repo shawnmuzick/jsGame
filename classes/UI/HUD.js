@@ -10,7 +10,7 @@ export class HUD {
 				x: this.x - this.radius,
 				y: this.y - this.radius,
 				color: "white",
-				alpha: 0,
+				alpha: 0.5,
 			},
 			{
 				x: this.x - this.radius,
@@ -18,7 +18,7 @@ export class HUD {
 				color: "blue",
 				alpha: 1,
 			},
-			{ x: 0 + this.radius, y: this.y - this.radius, color: "white", alpha: 0 },
+			{ x: 0 + this.radius, y: this.y - this.radius, color: "white", alpha: 0.5 },
 			{ x: 0 + this.radius, y: this.y - this.radius, color: "red", alpha: 1 },
 		];
 	}

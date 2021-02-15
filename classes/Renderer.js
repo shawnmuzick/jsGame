@@ -145,6 +145,7 @@ export class Renderer {
 		];
 		// loop through the orbs and drawn them out
 		for (let i = 0; i < obj.orbs.length; i++) {
+			console.log(obj.orbs[i]);
 			obj.drawOrb(
 				this.context,
 				arr[i][0],
