@@ -27,9 +27,31 @@ export function getHit(hitbox, c) {
 	// if we're within the X range of the hitbox
 	let x = false;
 	let y = false;
-	if (c.x > hitbox.xMin && c.x < hitbox.xMax) x = true;
-	if (c.y > hitbox.yMin && c.y < hitbox.yMax) y = true;
-	console.log(`x hit is ${x}`)
-	console.log(`y hit is ${y}`)
+	if (c.x + 0 > hitbox.xMin && c.x < hitbox.xMax) {
+		console.log("c.x + 0");
+		x = true;
+	}
+	if (c.x - 40 > hitbox.xMin && c.x < hitbox.xMax) {
+		console.log("c.x - 1");
+		x = true;
+	}
+	if (c.x + 40 > hitbox.xMin && c.x < hitbox.xMax) {
+		console.log("c.x + 1");
+		x = true;
+	}
+	if (c.y + 0 > hitbox.yMin && c.y < hitbox.yMax) {
+		console.log("c.y + 0");
+		y = true;
+	}
+	if (c.y - 50 > hitbox.yMin && c.y < hitbox.yMax) {
+		console.log("c.y - 1");
+		y = true;
+	}
+	if (c.y + 10 > hitbox.yMin && c.y < hitbox.yMax) {
+		console.log("c.x + 1");
+		y = true;
+	}
+	console.log(`x hit is ${x}`);
+	console.log(`y hit is ${y}`);
 	return x && y;
 }

@@ -5,8 +5,56 @@ import { World } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 import { getHitBox, getHit } from "./actors/util.js";
 import { getActorsInWorld } from "../app.js";
-function getHitDirection(){
+function processHit(obj, bx) {
+	// animation frames
+	let animationFrames = [192, 384, 576, 768, 960];
+	let cooridnate = animationFrames.indexOf(obj.frameX);
+	// facing up, depending on position and frameX
+	let upFrames = [
+		{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
+		{ x: obj.x - obj.width * 0.5, y: obj.y - 0.5 * obj.height }, //upper left
+		{ x: obj.x + obj.width * 0.5, y: obj.y - 1.0 * obj.height }, //mid
+		{ x: obj.x + obj.width * 1.5, y: obj.y - 0.5 * obj.height }, //upper right
+		{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
+	];
+	let downFrames = [
+		{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
+		{ x: obj.x - obj.width * 0.5, y: obj.y + 1.5 * obj.height }, //lower left
+		{ x: obj.x + obj.width * 0.5, y: obj.y + 2.0 * obj.height }, //mid
+		{ x: obj.x + obj.width * 1.5, y: obj.y + 1.5 * obj.height }, //lower right
+		{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
+	];
+	let leftFrames = [
+		{ x: obj.x - obj.width * 0.25, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x - obj.width * 0.5, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x - obj.width * 0.75, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x - obj.width * 1.25, y: obj.y + 0.5 * obj.height },
+	];
+	let rightFrames = [
+		{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x + obj.width * 0.25, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x + obj.width * 0.5, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x + obj.width * 0.75, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
+		{ x: obj.x + obj.width * 1.25, y: obj.y + 0.5 * obj.height },
+	];
+	//if the current attack frame was within the hitbox, register the hit
+	let hit = null;
 
+	if (obj.frameY === 21 * obj.width && cooridnate != -1) {
+		hit = getHit(bx, upFrames[cooridnate]); //if facing up
+	}
+	if (obj.frameY === 24 * obj.width && cooridnate != -1) {
+		hit = getHit(bx, leftFrames[cooridnate]); //if facing up
+	}
+	if (obj.frameY === 27 * obj.width && cooridnate != -1) {
+		hit = getHit(bx, downFrames[cooridnate]); //if facing up
+	}
+	if (obj.frameY === 30 * obj.width && cooridnate != -1) {
+		hit = getHit(bx, rightFrames[cooridnate]); //if facing up
+	}
+	return hit;
 }
 
 function iterateActors(actors, obj) {
@@ -20,58 +68,12 @@ function iterateActors(actors, obj) {
 		} else {
 			//get the actor's hitbox
 			let bx = getHitBox(actors[i]);
-			// animation frames
-			let animationFrames = [192, 384, 576, 768, 960];
-			let cooridnate = animationFrames.indexOf(obj.frameX);
-			// facing up, depending on position and frameX
-			let upFrames = [
-				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
-				{ x: obj.x - obj.width * 0.5, y: obj.y - 0.5 * obj.height }, //upper left
-				{ x: obj.x + obj.width * 0.5, y: obj.y - 1.0 * obj.height }, //mid
-				{ x: obj.x + obj.width * 1.5, y: obj.y - 0.5 * obj.height }, //upper right
-				{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
-			];
-			let downFrames = [
-				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height }, //left
-				{ x: obj.x - obj.width * 0.5, y: obj.y + 1.5 * obj.height }, //lower left
-				{ x: obj.x + obj.width * 0.5, y: obj.y + 2.0 * obj.height }, //mid
-				{ x: obj.x + obj.width * 1.5, y: obj.y + 1.5 * obj.height }, //lower right
-				{ x: obj.x + obj.width * 2.0, y: obj.y + 0.5 * obj.height }, // right
-			];
-			let leftFrames = [
-				{ x: obj.x - obj.width * 0.25, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x - obj.width * 0.5, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x - obj.width * 0.75, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x - obj.width * 1.0, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x - obj.width * 1.25, y: obj.y + 0.5 * obj.height },
-			];
-			let rightFrames = [
-				{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x + obj.width * 0.25, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x + obj.width * 0.5, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x + obj.width * 0.75, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x + obj.width * 1.0, y: obj.y + 0.5 * obj.height },
-				{ x: obj.x + obj.width * 1.25, y: obj.y + 0.5 * obj.height },
-			];
-			//if the current attack frame was within the hitbox, register the hit
-			let hit = null;
-
-			if (obj.frameY === 21 * obj.width && cooridnate != -1) {
-				hit = getHit(bx, upFrames[cooridnate]); //if facing up
-			}
-			if (obj.frameY === 24 * obj.width && cooridnate != -1) {
-				hit = getHit(bx, leftFrames[cooridnate]); //if facing up
-			}
-			if (obj.frameY === 27 * obj.width && cooridnate != -1) {
-				hit = getHit(bx, downFrames[cooridnate]); //if facing up
-			}
-			if (obj.frameY === 30 * obj.width && cooridnate != -1) {
-				hit = getHit(bx, rightFrames[cooridnate]); //if facing up
-			}
+			let hit = processHit(obj, bx);
 			//if the hit registered, kill the actor
 			actors[i].isLiving = !hit;
 			//if actor is dead, remove them from the list of actors
 			if (!actors[i].isLiving) {
+				console.log("HIT!!!")
 				actors.splice(i, 1);
 			}
 		}
@@ -145,7 +147,6 @@ export class Renderer {
 		];
 		// loop through the orbs and drawn them out
 		for (let i = 0; i < obj.orbs.length; i++) {
-			console.log(obj.orbs[i]);
 			obj.drawOrb(
 				this.context,
 				arr[i][0],
