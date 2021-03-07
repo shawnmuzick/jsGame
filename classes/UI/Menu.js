@@ -12,7 +12,11 @@ export class Menu {
 	}
 }
 
-export class InventoryMenu extends Menu {}
+export class InventoryMenu extends Menu {
+	constructor(x, y, context) {
+		super(x, y, context, 400, 400);
+	}
+}
 
 export class StatMenu extends Menu {
 	constructor(x, y, context) {

@@ -1,17 +1,18 @@
 // skele sprite playground
-import { Necromancer, Skeleton } from "./classes/actors/player.js";
-import { Renderer } from "./classes/Renderer.js";
-import { StatMenu } from "./classes/UI/Menu.js";
-import { FullWorld } from "./classes/world/world.js";
-import { buildCanvas } from "./DOM/DOMbuilders.js";
+import { Necromancer, Skeleton } from './classes/actors/player.js';
+import { Renderer } from './classes/Renderer.js';
+import { InventoryMenu, StatMenu } from './classes/UI/Menu.js';
+import { FullWorld } from './classes/world/world.js';
+import { buildCanvas } from './DOM/DOMbuilders.js';
 
 const canvas = buildCanvas(800);
-const context = canvas.getContext("2d");
+const context = canvas.getContext('2d');
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
 let renderer = new Renderer(context);
 let menu = new StatMenu(centerX, centerY, context);
+let invMenu = new InventoryMenu(centerX, centerY, context);
 let players = [];
 let p = new Necromancer({ x: centerX, y: centerY, context });
 players.push(p);
@@ -42,6 +43,7 @@ function drawActors() {
 		}
 		renderer.draw(p);
 		renderer.draw(menu, p.stats);
+		renderer.draw(invMenu, p.inventory);
 		if (p.HUD)
 			renderer.draw(p.HUD, {
 				hpMax: p.stats.hp.max,
@@ -63,30 +65,35 @@ function keydown(e, players) {
 	players.forEach((player) => {
 		player.isIdle = false;
 		switch (e.key) {
-			case "ArrowRight":
+			case 'ArrowRight':
 				player.right();
 				break;
-			case "ArrowLeft":
+			case 'ArrowLeft':
 				player.left();
 				break;
-			case "ArrowUp":
+			case 'ArrowUp':
 				player.up();
 				break;
-			case "ArrowDown":
+			case 'ArrowDown':
 				player.down();
 				break;
-			case "s":
+			case 's':
 				player.spell?.();
 				break;
-			case " ":
+			case ' ':
 				player.mele();
 				break;
-			case "t":
+			case 't':
 				// check if they're a player, not a pet
 				if (player.HUD) {
 					menu.open = !menu.open;
-					console.log(menu.open);
 					//prevent walking animation while opening menu
+					player.idle();
+					break;
+				}
+			case 'i':
+				if (player.HUD) {
+					invMenu.open = !invMenu.open;
 					player.idle();
 					break;
 				}
@@ -110,6 +117,6 @@ function keyUp() {
 	});
 }
 
-document.addEventListener("keydown", (e) => keydown(e, players));
-document.addEventListener("keyup", keyUp);
+document.addEventListener('keydown', (e) => keydown(e, players));
+document.addEventListener('keyup', keyUp);
 window.onload = setInterval(paint, 1000 / 15);

@@ -1,10 +1,10 @@
-import { Player } from "./actors/player.js";
-import { Menu, StatMenu } from "./UI/Menu.js";
-import { HUD } from "./UI/HUD.js";
-import { World } from "./world/world.js";
-import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
-import { getHitBox, getHit } from "./actors/util.js";
-import { getActorsInWorld } from "../app.js";
+import { Player } from './actors/player.js';
+import { InventoryMenu, Menu, StatMenu } from './UI/Menu.js';
+import { HUD } from './UI/HUD.js';
+import { World } from './world/world.js';
+import { walkMap, swordMap, spellMap, idleMap } from './actors/actionMaps.js';
+import { getHitBox, getHit } from './actors/util.js';
+import { getActorsInWorld } from '../app.js';
 function processHit(obj, bx) {
 	// animation frames
 	let animationFrames = [192, 384, 576, 768, 960];
@@ -73,7 +73,7 @@ function iterateActors(actors, obj) {
 			actors[i].isLiving = !hit;
 			//if actor is dead, remove them from the list of actors
 			if (!actors[i].isLiving) {
-				console.log("HIT!!!")
+				console.log('HIT!!!');
 				actors.splice(i, 1);
 			}
 		}
@@ -89,6 +89,7 @@ export class Renderer {
 		if (obj instanceof HUD) this.drawHUD(obj, params);
 		if (obj instanceof World) this.drawWorld(obj);
 		if (obj instanceof StatMenu) this.drawStatMenu(obj, params);
+		if (obj instanceof InventoryMenu) this.drawInventoryMenu(obj, params);
 	}
 
 	drawPlayer(obj) {
@@ -208,13 +209,13 @@ export class Renderer {
 		);
 		// loop through stats and print them out
 		let i = 40;
-		this.context.font = "20px serif";
-		this.context.fillStyle = "yellow";
-		let string = "";
+		this.context.font = '20px serif';
+		this.context.fillStyle = 'yellow';
+		let string = '';
 		for (const stat in data) {
-			if (stat === "hp") {
+			if (stat === 'hp') {
 				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
-			} else if (stat === "mp") {
+			} else if (stat === 'mp') {
 				string = `${stat}: ${data[stat].current}/${data[stat].max}`;
 			} else {
 				string = `${stat}: ${data[stat]}`;
@@ -225,6 +226,39 @@ export class Renderer {
 				obj.y - obj.height / 2 + i
 			);
 			i += 30;
+		}
+	}
+	drawInventoryMenu(obj, data) {
+		if (!obj.open) return;
+
+		let startX = obj.x - obj.width / 2;
+		let startY = obj.y - obj.height / 2;
+		startY += obj.height - 100;
+
+		this.context.drawImage(
+			obj.img,
+			obj.x - obj.width / 2,
+			obj.y - obj.height / 2,
+			obj.width,
+			obj.height
+		);
+		// draw the grid at the bottom
+		for (let i = 0; i < 8; i++) {
+			for (let j = 0; j < 2; j++) {
+				// outer square
+				this.context.fillStyle = 'blue';
+				this.context.fillRect(startX + i * 50, startY + j * 50, 50, 50);
+				this.context.fill;
+				// inner square
+				this.context.fillStyle = 'grey';
+				this.context.fillRect(
+					startX + i * 50 + 2,
+					startY + j * 50 + 2,
+					46,
+					46
+				);
+				this.context.fill;
+			}
 		}
 	}
 }
