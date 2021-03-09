@@ -231,10 +231,11 @@ export class Renderer {
 	drawInventoryMenu(obj, data) {
 		if (!obj.open) return;
 
+		let player = getActorsInWorld()[0];
 		let startX = obj.x - obj.width / 2;
 		let startY = obj.y - obj.height / 2;
 		startY += obj.height - 100;
-
+		// window
 		this.context.drawImage(
 			obj.img,
 			obj.x - obj.width / 2,
@@ -242,22 +243,37 @@ export class Renderer {
 			obj.width,
 			obj.height
 		);
+		// player space
+		this.context.strokeStyle = 'white';
+		this.context.beginPath();
+		this.context.rect(
+			obj.x - player.scaleWidth / 2,
+			obj.y - player.scaleHeight / 2 - 50,
+			player.scaleWidth,
+			player.scaleHeight
+		);
+		this.context.stroke();
+		// draw player image,
+		this.context.drawImage(
+			player.img,
+			0,
+			walkMap.get('down'),
+			player.width,
+			player.height,
+			obj.x - player.scaleWidth / 2,
+			obj.y - player.scaleHeight / 2 - 55,
+			player.scaleWidth,
+			player.scaleHeight
+		);
+
 		// draw the grid at the bottom
 		for (let i = 0; i < 8; i++) {
 			for (let j = 0; j < 2; j++) {
 				// outer square
-				this.context.fillStyle = 'blue';
-				this.context.fillRect(startX + i * 50, startY + j * 50, 50, 50);
-				this.context.fill;
-				// inner square
-				this.context.fillStyle = 'grey';
-				this.context.fillRect(
-					startX + i * 50 + 2,
-					startY + j * 50 + 2,
-					46,
-					46
-				);
-				this.context.fill;
+				this.context.strokeStyle = 'white';
+				this.context.beginPath();
+				this.context.rect(startX + i * 50, startY + j * 50, 50, 50);
+				this.context.stroke();
 			}
 		}
 	}
