@@ -1,12 +1,23 @@
 // skele sprite playground
-import { Necromancer, Skeleton } from './classes/actors/player.js';
-import { Renderer } from './classes/Renderer.js';
-import { InventoryMenu, StatMenu } from './classes/UI/Menu.js';
-import { FullWorld } from './classes/world/world.js';
-import { buildCanvas } from './DOM/DOMbuilders.js';
-
+import { Necromancer, Skeleton } from "./classes/actors/player.js";
+import { Renderer } from "./classes/Renderer.js";
+import { InventoryMenu, StatMenu } from "./classes/UI/Menu.js";
+import { World, GameWorld } from "./classes/world/world.js";
+import { buildCanvas } from "./DOM/DOMbuilders.js";
+import ActorRegistry from "./classes/actors/ActorRegistry.js";
+import Canvas from "./classes/Canvas.js";
+//Initialization
+//New Implementation
+const CANVAS = new Canvas(1);
+const WORLD = new GameWorld(CANVAS);
+let REGISTRY = new ActorRegistry();
+let RENDERER = new Renderer(CANVAS.context);
+REGISTRY.add(new Necromancer({ x: 1, y: 1, context: CANVAS.context }));
+console.log(REGISTRY.get());
+//-----------------------------------------------------
+//Old Implementation
 const canvas = buildCanvas(800);
-const context = canvas.getContext('2d');
+const context = canvas.getContext("2d");
 const centerX = canvas.width / 2;
 const centerY = canvas.height / 2;
 
@@ -17,106 +28,106 @@ let players = [];
 let p = new Necromancer({ x: centerX, y: centerY, context });
 players.push(p);
 
-export let map = new FullWorld({
-	cWidth: canvas.width / 8,
-	cHeight: canvas.height / 8,
+export let map = new World({
+  cWidth: canvas.width / 8,
+  cHeight: canvas.height / 8,
 });
 map.actors.push(p);
 
 export function getActorsInWorld() {
-	return map.actors;
+  return map.actors;
 }
 
 function clear() {
-	context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawWorld() {
-	renderer.draw(map.world[map.currentSpaceX][map.currentSpaceY]);
+  renderer.draw(map.world[map.currentSpaceX][map.currentSpaceY]);
 }
 
 function drawActors() {
-	map.actors.forEach((p) => {
-		//if the caster is idle, keep the pets wandering
-		if (p.isIdle) {
-			p.pets?.forEach((pet) => pet.idle());
-		}
-		renderer.draw(p);
-		renderer.draw(menu, p.stats);
-		renderer.draw(invMenu, p.inventory);
-		if (p.HUD)
-			renderer.draw(p.HUD, {
-				hpMax: p.stats.hp.max,
-				hpCurrent: p.stats.hp.current,
-				mpMax: p.stats.mp.max,
-				mpCurrent: p.stats.mp.current,
-			});
-	});
+  map.actors.forEach((p) => {
+    //if the caster is idle, keep the pets wandering
+    if (p.isIdle) {
+      p.pets?.forEach((pet) => pet.idle());
+    }
+    renderer.draw(p);
+    renderer.draw(menu, p.stats);
+    renderer.draw(invMenu, p.inventory);
+    if (p.HUD)
+      renderer.draw(p.HUD, {
+        hpMax: p.stats.hp.max,
+        hpCurrent: p.stats.hp.current,
+        mpMax: p.stats.mp.max,
+        mpCurrent: p.stats.mp.current,
+      });
+  });
 }
 
 function paint() {
-	clear();
-	drawWorld();
-	map.checkPosition(players[0]);
-	drawActors();
+  clear();
+  drawWorld();
+  map.checkPosition(players[0]);
+  drawActors();
 }
 
 function keydown(e, players) {
-	players.forEach((player) => {
-		player.isIdle = false;
-		switch (e.key) {
-			case 'ArrowRight':
-				player.right();
-				break;
-			case 'ArrowLeft':
-				player.left();
-				break;
-			case 'ArrowUp':
-				player.up();
-				break;
-			case 'ArrowDown':
-				player.down();
-				break;
-			case 's':
-				player.spell?.();
-				break;
-			case ' ':
-				player.mele();
-				break;
-			case 't':
-				// check if they're a player, not a pet
-				if (player.HUD) {
-					menu.open = !menu.open;
-					//prevent walking animation while opening menu
-					player.idle();
-					break;
-				}
-			case 'i':
-				if (player.HUD) {
-					invMenu.open = !invMenu.open;
-					player.idle();
-					break;
-				}
-			default:
-				player.idle();
-		}
-		if (player.pets?.length > 0) {
-			keydown(e, player.pets);
-		}
-	});
+  players.forEach((player) => {
+    player.isIdle = false;
+    switch (e.key) {
+      case "ArrowRight":
+        player.right();
+        break;
+      case "ArrowLeft":
+        player.left();
+        break;
+      case "ArrowUp":
+        player.up();
+        break;
+      case "ArrowDown":
+        player.down();
+        break;
+      case "s":
+        player.spell?.();
+        break;
+      case " ":
+        player.mele();
+        break;
+      case "t":
+        // check if they're a player, not a pet
+        if (player.HUD) {
+          menu.open = !menu.open;
+          //prevent walking animation while opening menu
+          player.idle();
+          break;
+        }
+      case "i":
+        if (player.HUD) {
+          invMenu.open = !invMenu.open;
+          player.idle();
+          break;
+        }
+      default:
+        player.idle();
+    }
+    if (player.pets?.length > 0) {
+      keydown(e, player.pets);
+    }
+  });
 }
 
 function keyUp() {
-	players.forEach((p) => {
-		p.idle();
-		if (p.pets?.length > 0) {
-			p.pets.forEach((pet) => {
-				pet.idle();
-			});
-		}
-	});
+  players.forEach((p) => {
+    p.idle();
+    if (p.pets?.length > 0) {
+      p.pets.forEach((pet) => {
+        pet.idle();
+      });
+    }
+  });
 }
 
-document.addEventListener('keydown', (e) => keydown(e, players));
-document.addEventListener('keyup', keyUp);
+document.addEventListener("keydown", (e) => keydown(e, players));
+document.addEventListener("keyup", keyUp);
 window.onload = setInterval(paint, 1000 / 15);
