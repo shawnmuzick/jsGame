@@ -1,5 +1,6 @@
 // skele sprite playground
-import { Necromancer, Skeleton } from "./classes/actors/player.js";
+import { Necromancer } from "./classes/actors/player.js";
+import KeyMapper from "./classes/actors/KeyMapper.js";
 import { Renderer } from "./classes/Renderer.js";
 import { InventoryMenu, StatMenu } from "./classes/UI/Menu.js";
 import { World, GameWorld } from "./classes/world/world.js";
@@ -8,12 +9,12 @@ import ActorRegistry from "./classes/actors/ActorRegistry.js";
 import Canvas from "./classes/Canvas.js";
 //Initialization
 //New Implementation
-const CANVAS = new Canvas(1);
+const CANVAS = new Canvas(100);
 const WORLD = new GameWorld(CANVAS);
+const KEYMAP = new KeyMapper();
 let REGISTRY = new ActorRegistry();
 let RENDERER = new Renderer(CANVAS.context);
 REGISTRY.add(new Necromancer({ x: 1, y: 1, context: CANVAS.context }));
-console.log(REGISTRY.get());
 //-----------------------------------------------------
 //Old Implementation
 const canvas = buildCanvas(800);
@@ -64,53 +65,38 @@ function drawActors() {
       });
   });
 }
+let fps, fpsInterval, startTime, now, then, elapsed;
+function fpsInit() {
+  fps = 20;
+  fpsInterval = 1000 / fps;
+  then = Date.now();
+  startTime = then;
+}
+fpsInit();
+function fpsIncrement() {
+  now = Date.now();
+  elapsed = now - then;
+}
+function fpsUpdate() {
+  then = now - (elapsed % fpsInterval);
+}
 
 function paint() {
-  clear();
-  drawWorld();
-  map.checkPosition(players[0]);
-  drawActors();
+  requestAnimationFrame(paint);
+  fpsIncrement();
+  if (elapsed > fpsInterval) {
+    fpsUpdate();
+    clear();
+    drawWorld();
+    map.checkPosition(players[0]);
+    drawActors();
+  }
 }
 
 function keydown(e, players) {
   players.forEach((player) => {
     player.isIdle = false;
-    switch (e.key) {
-      case "ArrowRight":
-        player.right();
-        break;
-      case "ArrowLeft":
-        player.left();
-        break;
-      case "ArrowUp":
-        player.up();
-        break;
-      case "ArrowDown":
-        player.down();
-        break;
-      case "s":
-        player.spell?.();
-        break;
-      case " ":
-        player.mele();
-        break;
-      case "t":
-        // check if they're a player, not a pet
-        if (player.HUD) {
-          menu.open = !menu.open;
-          //prevent walking animation while opening menu
-          player.idle();
-          break;
-        }
-      case "i":
-        if (player.HUD) {
-          invMenu.open = !invMenu.open;
-          player.idle();
-          break;
-        }
-      default:
-        player.idle();
-    }
+    KEYMAP.keys[e.key](player);
     if (player.pets?.length > 0) {
       keydown(e, player.pets);
     }
@@ -130,4 +116,4 @@ function keyUp() {
 
 document.addEventListener("keydown", (e) => keydown(e, players));
 document.addEventListener("keyup", keyUp);
-window.onload = setInterval(paint, 1000 / 15);
+window.onload = requestAnimationFrame(paint);

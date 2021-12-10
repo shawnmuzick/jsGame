@@ -20,6 +20,7 @@ export class Player extends Sprite {
     this.scaleWidth = this.width * 1.5;
     this.scaleHeight = this.height * 1.5;
     this.speed = 5;
+    this.spell = summonSkeleton;
     this.isIdle = true;
     this.isLiving = true;
     this.inventory = [];
@@ -40,48 +41,18 @@ export class Player extends Sprite {
       y: this.y,
     });
   }
-
   update(start = 0, end = 8, offset = 1) {
     if (this.frameX >= this.width * end * offset) {
       this.frameX = start;
     }
     this.frameX += this.width * offset;
   }
-
-  up() {
-    this.frameY = walkMap.get("up");
-    this.y -= this.speed;
-  }
-
-  left() {
-    this.frameY = walkMap.get("left");
-    this.x -= this.speed;
-  }
-
-  down() {
-    this.frameY = walkMap.get("down");
-    this.y += this.speed;
-  }
-
-  right() {
-    this.frameY = walkMap.get("right");
-    this.x += this.speed;
-  }
-
   idle() {
     this.frameY = idleMap.get(this.frameY / this.height);
     this.frameX = 0;
     this.isIdle = true;
   }
 
-  mele() {
-    if (walkMap.has(this.frameY)) {
-      this.frameY = swordMap.get(this.frameY);
-      this.pets?.forEach((p) => {
-        p.frameY = swordMap.get(p.frameY);
-      });
-    }
-  }
 
   lvlUp() {
     this.stats.pts += 5;
@@ -124,12 +95,5 @@ export class Necromancer extends Player {
       pts: 0,
     };
     this.petRange = 100;
-  }
-  spell() {
-    // if not enough mana, return
-    if (this.stats.mp.current <= 0) return;
-
-    if (walkMap.has(this.frameY)) this.frameY = spellMap.get(this.frameY);
-    summonSkeleton(this);
   }
 }
