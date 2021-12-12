@@ -93,6 +93,7 @@ export class Renderer {
   }
 
   drawPlayer(obj) {
+    console.log(obj);
     let offset = 1;
     let updateParams = [0];
     let scaleX = 0;

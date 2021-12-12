@@ -9,12 +9,12 @@ import ActorRegistry from "./classes/actors/ActorRegistry.js";
 import Canvas from "./classes/Canvas.js";
 //Initialization
 //New Implementation
-const CANVAS = new Canvas(100);
+const CANVAS = new Canvas(800);
 const WORLD = new GameWorld(CANVAS);
 const KEYMAP = new KeyMapper();
 let REGISTRY = new ActorRegistry();
 let RENDERER = new Renderer(CANVAS.context);
-REGISTRY.add(new Necromancer({ x: 1, y: 1, context: CANVAS.context }));
+REGISTRY.add(new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context }));
 //-----------------------------------------------------
 //Old Implementation
 const canvas = buildCanvas(800);
@@ -45,10 +45,11 @@ function clear() {
 
 function drawWorld() {
   renderer.draw(map.world[map.currentSpaceX][map.currentSpaceY]);
+  RENDERER.draw(WORLD.world[WORLD.currentSpaceX][WORLD.currentSpaceY]);
 }
 
 function drawActors() {
-  map.actors.forEach((p) => {
+  function handleDraw(p, renderer) {
     //if the caster is idle, keep the pets wandering
     if (p.isIdle) {
       p.pets?.forEach((pet) => pet.idle());
@@ -63,6 +64,12 @@ function drawActors() {
         mpMax: p.stats.mp.max,
         mpCurrent: p.stats.mp.current,
       });
+  }
+  REGISTRY.listActors().forEach((p) => {
+    handleDraw(p, RENDERER);
+  });
+  map.actors.forEach((p) => {
+    handleDraw(p, renderer);
   });
 }
 let fps, fpsInterval, startTime, now, then, elapsed;

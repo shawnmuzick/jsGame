@@ -56,6 +56,7 @@ export class World {
       }
       this.world.push(arr);
     }
+    console.log(this.world);
   }
 
   checkPosition(player) {
@@ -90,7 +91,7 @@ export class World {
 export class GameWorld {
   constructor(CANVAS) {
     this.world = [];
-    this.populate({ cWidth: CANVAS.width, cHeight: CANVAS.height });
+    this.populate({ cWidth: CANVAS.width / 8, cHeight: CANVAS.height / 8 });
     this.currentSpaceX = 0;
     this.currentSpaceY = 0;
     this.actors = [];

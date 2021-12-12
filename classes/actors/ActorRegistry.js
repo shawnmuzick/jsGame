@@ -15,9 +15,11 @@ export default class ActorRegistry {
     return this.actors.has(actorID);
   }
 
-  get(actorID) {
-    //if no id provided, return an array of all actors
-    if (!actorID) return Array.from(this.actors.values());
+  getByID(actorID) {
     return this.actors.get(actorID);
+  }
+  listActors() {
+    //if no id provided, return an array of all actors
+    return Array.from(this.actors.values());
   }
 }
