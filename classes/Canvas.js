@@ -16,4 +16,7 @@ export default class Canvas {
   get height() {
     return this.canvas.height;
   }
+  clear() {
+    this.context.clearRect(0, 0, this.width, this.height);
+  }
 }

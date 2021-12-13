@@ -1,50 +1,20 @@
 // skele sprite playground
 import { Necromancer } from "./classes/actors/player.js";
-import KeyMapper from "./classes/actors/KeyMapper.js";
+import { KEYMAP } from "./classes/actors/KeyMapper.js";
 import { Renderer } from "./classes/Renderer.js";
 import { InventoryMenu, StatMenu } from "./classes/UI/Menu.js";
-import { World, GameWorld } from "./classes/world/world.js";
-import { buildCanvas } from "./DOM/DOMbuilders.js";
-import ActorRegistry from "./classes/actors/ActorRegistry.js";
+import { World } from "./classes/world/world.js";
+import { REGISTRY } from "./classes/actors/ActorRegistry.js";
 import Canvas from "./classes/Canvas.js";
 //Initialization
-//New Implementation
 const CANVAS = new Canvas(800);
-const WORLD = new GameWorld(CANVAS);
-const KEYMAP = new KeyMapper();
-let REGISTRY = new ActorRegistry();
+const WORLD = new World(CANVAS);
 let RENDERER = new Renderer(CANVAS.context);
 REGISTRY.add(new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context }));
-//-----------------------------------------------------
-//Old Implementation
-const canvas = buildCanvas(800);
-const context = canvas.getContext("2d");
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-
-let renderer = new Renderer(context);
-let menu = new StatMenu(centerX, centerY, context);
-let invMenu = new InventoryMenu(centerX, centerY, context);
-let players = [];
-let p = new Necromancer({ x: centerX, y: centerY, context });
-players.push(p);
-
-export let map = new World({
-  cWidth: canvas.width / 8,
-  cHeight: canvas.height / 8,
-});
-map.actors.push(p);
-
-export function getActorsInWorld() {
-  return map.actors;
-}
-
-function clear() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-}
+let menu = new StatMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
+let invMenu = new InventoryMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 
 function drawWorld() {
-  renderer.draw(map.world[map.currentSpaceX][map.currentSpaceY]);
   RENDERER.draw(WORLD.world[WORLD.currentSpaceX][WORLD.currentSpaceY]);
 }
 
@@ -68,9 +38,6 @@ function drawActors() {
   REGISTRY.listActors().forEach((p) => {
     handleDraw(p, RENDERER);
   });
-  map.actors.forEach((p) => {
-    handleDraw(p, renderer);
-  });
 }
 let fps, fpsInterval, startTime, now, then, elapsed;
 function fpsInit() {
@@ -80,10 +47,12 @@ function fpsInit() {
   startTime = then;
 }
 fpsInit();
+
 function fpsIncrement() {
   now = Date.now();
   elapsed = now - then;
 }
+
 function fpsUpdate() {
   then = now - (elapsed % fpsInterval);
 }
@@ -93,34 +62,41 @@ function paint() {
   fpsIncrement();
   if (elapsed > fpsInterval) {
     fpsUpdate();
-    clear();
+    CANVAS.clear();
     drawWorld();
-    map.checkPosition(players[0]);
+    // map.checkPosition(players[0]);
     drawActors();
   }
 }
 
-function keydown(e, players) {
-  players.forEach((player) => {
+function keydown(e) {
+  function handleKey(player) {
     player.isIdle = false;
     KEYMAP.keys[e.key](player);
-    if (player.pets?.length > 0) {
-      keydown(e, player.pets);
-    }
+    // if (player.pets?.length > 0) {
+    //   keydown(e, player.pets);
+    // }
+  }
+
+  REGISTRY.listActors().forEach((player) => {
+    handleKey(player);
   });
 }
 
 function keyUp() {
-  players.forEach((p) => {
+  function handleKey(p) {
     p.idle();
     if (p.pets?.length > 0) {
       p.pets.forEach((pet) => {
         pet.idle();
       });
     }
+  }
+  REGISTRY.listActors().forEach((p) => {
+    handleKey(p);
   });
 }
 
-document.addEventListener("keydown", (e) => keydown(e, players));
+document.addEventListener("keydown", (e) => keydown(e));
 document.addEventListener("keyup", keyUp);
 window.onload = requestAnimationFrame(paint);

@@ -1,4 +1,4 @@
-export default class ActorRegistry {
+export class ActorRegistry {
   constructor() {
     this.actors = new Map();
   }
@@ -23,3 +23,5 @@ export default class ActorRegistry {
     return Array.from(this.actors.values());
   }
 }
+
+export let REGISTRY = new ActorRegistry();

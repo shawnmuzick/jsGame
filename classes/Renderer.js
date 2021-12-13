@@ -4,7 +4,8 @@ import { HUD } from "./UI/HUD.js";
 import { Screen } from "./world/world.js";
 import { walkMap, swordMap, spellMap, idleMap } from "./actors/actionMaps.js";
 import { getHitBox, getHit } from "./actors/util.js";
-import { getActorsInWorld } from "../app.js";
+import { REGISTRY } from "./actors/ActorRegistry.js";
+
 function processHit(obj, bx) {
   // animation frames
   let animationFrames = [192, 384, 576, 768, 960];
@@ -93,7 +94,6 @@ export class Renderer {
   }
 
   drawPlayer(obj) {
-    console.log(obj);
     let offset = 1;
     let updateParams = [0];
     let scaleX = 0;
@@ -109,7 +109,7 @@ export class Renderer {
       // only hit check on players for now
       if (obj.HUD) {
         //acquire list of actors
-        let actors = getActorsInWorld();
+        let actors = REGISTRY.listActors();
         //iterate over the actors
         iterateActors(actors, obj);
       }

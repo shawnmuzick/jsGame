@@ -45,7 +45,7 @@ export const keymap = {
     }
   },
 };
-export default class KeyMapper {
+export class KeyMapper {
   constructor(obj) {
     this.keys = obj || keymap;
   }
@@ -54,3 +54,5 @@ export default class KeyMapper {
     this.keys[key] = action;
   }
 }
+
+export const KEYMAP = new KeyMapper();

@@ -63,6 +63,7 @@ export class Skeleton extends Player {
     obj.img = getSpriteSheet("skeleton");
     super(obj);
     this.speed = 3;
+    this.spell = () => {};
     this.stats = {
       hp: 8,
       mp: 0,
