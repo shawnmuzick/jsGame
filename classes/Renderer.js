@@ -74,8 +74,8 @@ function iterateActors(actors, obj) {
       actors[i].isLiving = !hit;
       //if actor is dead, remove them from the list of actors
       if (!actors[i].isLiving) {
-        console.log("HIT!!!");
-        actors.splice(i, 1);
+        console.log("HIT!!!", actors[i].id);
+        REGISTRY.remove(actors[i].id);
       }
     }
   }
@@ -108,10 +108,8 @@ export class Renderer {
       if (obj.frameX % 3 !== 0) obj.frameX = 0;
       // only hit check on players for now
       if (obj.HUD) {
-        //acquire list of actors
-        let actors = REGISTRY.listActors();
         //iterate over the actors
-        iterateActors(actors, obj);
+        iterateActors(REGISTRY.listActors(), obj);
       }
       // if we're idle
     } else if (obj.isIdle) {
@@ -225,10 +223,9 @@ export class Renderer {
       i += 30;
     }
   }
-  drawInventoryMenu(obj, data) {
+  drawInventoryMenu(obj, actorID) {
     if (!obj.open) return;
-
-    let player = getActorsInWorld()[0];
+    let player = REGISTRY.getByID(actorID);
     let startX = obj.x - obj.width / 2;
     let startY = obj.y - obj.height / 2;
     startY += obj.height - 100;

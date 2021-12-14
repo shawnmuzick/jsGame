@@ -25,5 +25,4 @@ export function summonSkeleton(caller) {
     lvl: caller.stats.lvl,
     pts: null,
   };
-  delete pet.HUD;
 }

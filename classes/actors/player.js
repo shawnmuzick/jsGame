@@ -36,10 +36,6 @@ export class Player extends Sprite {
       // pts represents lvl up points to allocate
       pts: 0,
     };
-    this.HUD = new HUD({
-      x: this.x,
-      y: this.y,
-    });
   }
   update(start = 0, end = 8, offset = 1) {
     if (this.frameX >= this.width * end * offset) {
