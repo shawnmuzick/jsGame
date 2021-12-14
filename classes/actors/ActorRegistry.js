@@ -1,6 +1,7 @@
 export class ActorRegistry {
   constructor() {
     this.actors = new Map();
+    this.players = new Map();
   }
 
   add(actor) {

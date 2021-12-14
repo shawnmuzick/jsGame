@@ -23,6 +23,7 @@ export class Player extends Sprite {
     this.spell = summonSkeleton;
     this.isIdle = true;
     this.isLiving = true;
+    this.isNPC = false;
     this.inventory = [];
     this.stats = {
       hp: { max: 0, current: 0 },

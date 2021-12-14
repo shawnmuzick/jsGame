@@ -85,15 +85,7 @@ export class Renderer {
     this.context = context;
   }
 
-  draw(obj, params) {
-    if (obj instanceof Player) this.drawPlayer(obj);
-    if (obj instanceof HUD) this.drawHUD(obj, params);
-    if (obj instanceof Screen) this.drawScreen(obj);
-    if (obj instanceof StatMenu) this.drawStatMenu(obj, params);
-    if (obj instanceof InventoryMenu) this.drawInventoryMenu(obj, params);
-  }
-
-  drawPlayer(obj) {
+  drawActors(obj) {
     let offset = 1;
     let updateParams = [0];
     let scaleX = 0;
@@ -136,6 +128,8 @@ export class Renderer {
   }
 
   drawHUD(obj, params) {
+    //no hud, is an NPC
+    if (obj === undefined) return;
     const { hpMax, hpCurrent, mpMax, mpCurrent } = params;
     // draw the dash area
     obj.drawConsole(this.context);
@@ -196,6 +190,8 @@ export class Renderer {
   }
 
   drawStatMenu(obj, data) {
+    //no menu system, is an NPC
+    if (obj === undefined) return;
     // only draw if window is open
     if (!obj.open) return;
     // draw the stat window
@@ -224,6 +220,8 @@ export class Renderer {
     }
   }
   drawInventoryMenu(obj, actorID) {
+    //no menu system, is an NPC
+    if (obj === undefined) return;
     if (!obj.open) return;
     let player = REGISTRY.getByID(actorID);
     let startX = obj.x - obj.width / 2;

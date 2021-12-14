@@ -62,29 +62,30 @@ export class World {
   }
 }
 
-function checkPosition(player) {
+export function checkPosition(player, world) {
   //check if the player has gone over one of the edges
   //if so, reset that cooridnate and move a space on the world grid
   const { x, y, width } = player;
+  console.log(world);
   // leftmost
-  if (x + width < 0 && this.currentSpaceX > 0) {
+  if (x + width < 0 && world.currentSpaceX > 0) {
     // move right
-    this.currentSpaceX--;
+    world.currentSpaceX--;
     player.x = worldSize - player.width;
     player.pets?.forEach((p) => (p.x = worldSize - p.width));
     // rightmost
-  } else if (x > worldSize && this.currentSpaceX < 8) {
-    this.currentSpaceX++;
+  } else if (x > worldSize && world.currentSpaceX < 8) {
+    world.currentSpaceX++;
     player.x = 0;
     player.pets?.forEach((p) => (p.x = 0));
     // upmost
-  } else if (y + width < 0 && this.currentSpaceY > 0) {
-    this.currentSpaceY--;
+  } else if (y + width < 0 && world.currentSpaceY > 0) {
+    world.currentSpaceY--;
     player.y = worldSize - player.width;
     player.pets?.forEach((p) => (p.y = worldSize - p.width));
     // downmost
-  } else if (y > worldSize && this.currentSpaceY < 8) {
-    this.currentSpaceY++;
+  } else if (y > worldSize && world.currentSpaceY < 8) {
+    world.currentSpaceY++;
     player.y = 0;
     player.pets?.forEach((p) => (p.y = 0));
   }

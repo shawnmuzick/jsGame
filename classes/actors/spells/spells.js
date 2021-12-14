@@ -14,6 +14,7 @@ export function summonSkeleton(caller) {
   REGISTRY.add(pet);
   caller.stats.mp.current -= 2;
   pet.idle = () => wander(pet);
+  pet.isNPC = true;
   pet.stats = {
     hp: caller.stats.hp / 4,
     mp: caller.stats.mp / 4,

@@ -3,7 +3,7 @@ import { Necromancer } from "./classes/actors/player.js";
 import { KEYMAP } from "./classes/actors/KeyMapper.js";
 import { Renderer } from "./classes/Renderer.js";
 import { InventoryMenu, StatMenu } from "./classes/UI/Menu.js";
-import { World } from "./classes/world/world.js";
+import { World, checkPosition } from "./classes/world/world.js";
 import { REGISTRY } from "./classes/actors/ActorRegistry.js";
 import Canvas from "./classes/Canvas.js";
 import { HUD } from "./classes/UI/HUD.js";
@@ -17,22 +17,25 @@ PLAYER.statsMenu = new StatMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 PLAYER.invMenu = new InventoryMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 REGISTRY.add(PLAYER);
 
-function drawActors() {
-  REGISTRY.listActors().forEach((p) => {
+function drawPlayers(players) {
+  players.forEach((p) => {
     //if the caster is idle, keep updating pets
     if (p.isIdle) p.pets?.forEach((pet) => pet.idle());
 
-    RENDERER.draw(p);
-    RENDERER.draw(p.statsMenu, p.stats);
-    RENDERER.draw(p.invMenu, p.id);
-    if (p.HUD) {
-      RENDERER.draw(p.HUD, {
-        hpMax: p.stats.hp.max,
-        hpCurrent: p.stats.hp.current,
-        mpMax: p.stats.mp.max,
-        mpCurrent: p.stats.mp.current,
-      });
-    }
+    RENDERER.drawActors(p);
+    RENDERER.drawStatMenu(p.statsMenu, p.stats);
+    RENDERER.drawInventoryMenu(p.invMenu, p.id);
+    RENDERER.drawHUD(p.HUD, {
+      hpMax: p.stats.hp.max,
+      hpCurrent: p.stats.hp.current,
+      mpMax: p.stats.mp.max,
+      mpCurrent: p.stats.mp.current,
+    });
+  });
+}
+function drawNPCs(npcs) {
+  npcs.forEach((p) => {
+    RENDERER.drawActors(p);
   });
 }
 
@@ -61,8 +64,9 @@ function paint() {
     fpsUpdate();
     CANVAS.clear();
     RENDERER.drawScreen(WORLD.world[WORLD.currentSpaceX][WORLD.currentSpaceY]);
-    // map.checkPosition(players[0]);
-    drawActors();
+    checkPosition(REGISTRY.listActors()[0], WORLD);
+    drawPlayers(REGISTRY.listActors().filter((a) => a.isNPC === false));
+    drawNPCs(REGISTRY.listActors().filter((a) => a.isNPC === true));
   }
 }
 
