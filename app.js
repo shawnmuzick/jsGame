@@ -5,10 +5,10 @@ import { Renderer } from "./classes/Renderer.js";
 import { InventoryMenu, StatMenu } from "./classes/UI/Menu.js";
 import { World, checkPosition } from "./classes/world/world.js";
 import { REGISTRY } from "./classes/actors/ActorRegistry.js";
-import Canvas from "./classes/Canvas.js";
+import { CANVAS } from "./classes/Canvas.js";
 import { HUD } from "./classes/UI/HUD.js";
+import { spawnEnemies } from "./classes/world/spawnEnemies.js";
 //Initialization
-const CANVAS = new Canvas(800);
 const WORLD = new World(CANVAS);
 let RENDERER = new Renderer(CANVAS.context);
 let PLAYER = new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context });
@@ -16,6 +16,7 @@ PLAYER.HUD = new HUD({ x: PLAYER.x, y: PLAYER.y });
 PLAYER.statsMenu = new StatMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 PLAYER.invMenu = new InventoryMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 REGISTRY.add(PLAYER);
+spawnEnemies(1);
 
 function drawPlayers(players) {
   players.forEach((p) => {
@@ -73,7 +74,11 @@ function paint() {
 function keydown(e) {
   REGISTRY.listActors().forEach((player) => {
     player.isIdle = false;
-    KEYMAP.keys[e.key](player);
+    try {
+      KEYMAP.keys[e.key](player);
+    } catch (e) {
+      console.log(e);
+    }
   });
 }
 

@@ -85,7 +85,7 @@ export class Renderer {
     this.context = context;
   }
 
-  drawActors(obj) {
+  drawActors(obj, filter) {
     let offset = 1;
     let updateParams = [0];
     let scaleX = 0;
@@ -113,6 +113,9 @@ export class Renderer {
     } else {
       updateParams.push(8);
     }
+    if (obj.filter) {
+      this.context.filter = "invert(100%)";
+    }
     this.context.drawImage(
       obj.img,
       obj.frameX,
@@ -124,6 +127,7 @@ export class Renderer {
       obj.scaleWidth * offset,
       obj.scaleHeight * offset
     );
+    if (obj.filter) this.context.filter = "invert(0%)";
     obj.update(...updateParams, offset);
   }
 

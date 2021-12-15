@@ -74,6 +74,27 @@ export class Skeleton extends Player {
     };
   }
 }
+export class Cadaver extends Player {
+  constructor(obj) {
+    obj.img = getSpriteSheet("skeleton");
+    super(obj);
+    this.speed = 3;
+    this.spell = () => {};
+    this.stats = {
+      hp: 8,
+      mp: 0,
+      vit: 8,
+      dex: 7,
+      str: 10,
+      mag: 5,
+      exp: 0,
+      lvl: 1,
+      pts: 0,
+    };
+    this.isNPC = true;
+    this.filter = "invert(100%)";
+  }
+}
 
 export class Necromancer extends Player {
   constructor(obj) {

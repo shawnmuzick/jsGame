@@ -66,7 +66,6 @@ export function checkPosition(player, world) {
   //check if the player has gone over one of the edges
   //if so, reset that cooridnate and move a space on the world grid
   const { x, y, width } = player;
-  console.log(world);
   // leftmost
   if (x + width < 0 && world.currentSpaceX > 0) {
     // move right
