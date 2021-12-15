@@ -1,7 +1,7 @@
-import { HUD } from "../UI/HUD.js";
 import { summonSkeleton } from "./spells/spells.js";
 import { getSpriteSheet } from "./util.js";
 import { idleMap } from "./actionMaps.js";
+import { npcWander } from "./pets.js";
 export class Sprite {
   constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0 }) {
     this.img = img;
@@ -91,6 +91,7 @@ export class Cadaver extends Player {
       lvl: 1,
       pts: 0,
     };
+    this.idle = () => npcWander(this);
     this.isNPC = true;
     this.filter = "invert(100%)";
   }

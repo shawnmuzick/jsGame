@@ -41,3 +41,39 @@ export function wander(caller) {
   }
   return;
 }
+
+export function npcWander(caller) {
+  let direction = caller.frameY / caller.height;
+  // if we hit either of the limits
+  let tmp = getRandomInt(8, 12);
+  //reroll until we get a new one, preferably opposite direction
+  while (tmp === direction && Math.abs(tmp - direction) >= 2) {
+    tmp = getRandomInt(8, 12);
+  }
+  direction = tmp;
+  // if we were attacking when this gets called
+  if (Array.from(swordMap.values()).includes(caller.frameY)) {
+    caller.frameY = idleMap.get(caller.frameY / caller.height);
+    caller.frameX = 0;
+  } else {
+    caller.frameY = direction * caller.height;
+  }
+  switch (direction) {
+    // in order: up, left, down, right
+    case 8:
+      caller.y -= caller.speed;
+      break;
+    case 9:
+      caller.x -= caller.speed;
+      break;
+    case 10:
+      caller.y += caller.speed;
+      break;
+    case 11:
+      caller.x += caller.speed;
+      break;
+    default:
+      caller.y -= caller.speed;
+  }
+  return;
+}

@@ -36,6 +36,7 @@ function drawPlayers(players) {
 }
 function drawNPCs(npcs) {
   npcs.forEach((p) => {
+    p.idle();
     RENDERER.drawActors(p);
   });
 }
