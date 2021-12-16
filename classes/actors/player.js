@@ -91,7 +91,6 @@ export class Cadaver extends Player {
       lvl: 1,
       pts: 0,
     };
-    this.idle = () => npcWander(this);
     this.isNPC = true;
     this.filter = "invert(100%)";
   }

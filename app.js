@@ -8,9 +8,10 @@ import { REGISTRY } from "./classes/actors/ActorRegistry.js";
 import { CANVAS } from "./classes/Canvas.js";
 import { HUD } from "./classes/UI/HUD.js";
 import { spawnEnemies } from "./classes/world/spawnEnemies.js";
+import { npcWander } from "./classes/actors/pets.js";
 //Initialization
 const WORLD = new World(CANVAS);
-let RENDERER = new Renderer(CANVAS.context);
+export let RENDERER = new Renderer(CANVAS.context);
 let PLAYER = new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context });
 PLAYER.HUD = new HUD({ x: PLAYER.x, y: PLAYER.y });
 PLAYER.statsMenu = new StatMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
@@ -36,7 +37,6 @@ function drawPlayers(players) {
 }
 function drawNPCs(npcs) {
   npcs.forEach((p) => {
-    p.idle();
     RENDERER.drawActors(p);
   });
 }
@@ -68,25 +68,32 @@ function paint() {
     RENDERER.drawScreen(WORLD.world[WORLD.currentSpaceX][WORLD.currentSpaceY]);
     checkPosition(REGISTRY.listActors()[0], WORLD);
     drawPlayers(REGISTRY.listActors().filter((a) => a.isNPC === false));
+    REGISTRY.listActors()
+      .filter((a) => a.isNPC === true)
+      .forEach((a) => npcWander(a));
     drawNPCs(REGISTRY.listActors().filter((a) => a.isNPC === true));
   }
 }
 
 function keydown(e) {
-  REGISTRY.listActors().forEach((player) => {
-    player.isIdle = false;
-    try {
-      KEYMAP.keys[e.key](player);
-    } catch (e) {
-      console.log(e);
-    }
-  });
+  REGISTRY.listActors()
+    .filter((a) => a.isNPC === false)
+    .forEach((player) => {
+      player.isIdle = false;
+      try {
+        KEYMAP.keys[e.key](player);
+      } catch (e) {
+        console.log(e);
+      }
+    });
 }
 
 function keyUp() {
-  REGISTRY.listActors().forEach((p) => {
-    p.idle();
-  });
+  REGISTRY.listActors()
+    .filter((a) => a.isNPC === false)
+    .forEach((p) => {
+      p.idle();
+    });
 }
 
 document.addEventListener("keydown", (e) => keydown(e));
