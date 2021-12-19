@@ -45,8 +45,8 @@ export class World {
   constructor(CANVAS) {
     this.world = [];
     this.populate({ cWidth: CANVAS.width / 8, cHeight: CANVAS.height / 8 });
-    this.currentSpaceX = 0;
-    this.currentSpaceY = 0;
+    this.renderedSpaceX = 0;
+    this.renderedSpaceY = 0;
     this.actors = [];
   }
   //create a 9x9 world of screens
@@ -67,24 +67,24 @@ export function checkPosition(player, world) {
   //if so, reset that cooridnate and move a space on the world grid
   const { x, y, width } = player;
   // leftmost
-  if (x + width < 0 && world.currentSpaceX > 0) {
+  if (x + width < 0 && world.renderedSpaceX > 0) {
     // move right
-    world.currentSpaceX--;
+    world.renderedSpaceX--;
     player.x = worldSize - player.width;
     player.pets?.forEach((p) => (p.x = worldSize - p.width));
     // rightmost
-  } else if (x > worldSize && world.currentSpaceX < 8) {
-    world.currentSpaceX++;
+  } else if (x > worldSize && world.renderedSpaceX < 8) {
+    world.renderedSpaceX++;
     player.x = 0;
     player.pets?.forEach((p) => (p.x = 0));
     // upmost
-  } else if (y + width < 0 && world.currentSpaceY > 0) {
-    world.currentSpaceY--;
+  } else if (y + width < 0 && world.renderedSpaceY > 0) {
+    world.renderedSpaceY--;
     player.y = worldSize - player.width;
     player.pets?.forEach((p) => (p.y = worldSize - p.width));
     // downmost
-  } else if (y > worldSize && world.currentSpaceY < 8) {
-    world.currentSpaceY++;
+  } else if (y > worldSize && world.renderedSpaceY < 8) {
+    world.renderedSpaceY++;
     player.y = 0;
     player.pets?.forEach((p) => (p.y = 0));
   }

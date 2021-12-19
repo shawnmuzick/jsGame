@@ -1,5 +1,4 @@
 import { Skeleton } from "../player.js";
-import { wander } from "../pets.js";
 import { REGISTRY } from "../ActorRegistry.js";
 export function summonSkeleton(caller) {
   //pets should wander on idle
@@ -13,7 +12,6 @@ export function summonSkeleton(caller) {
   caller.pets.push(pet);
   REGISTRY.add(pet);
   caller.stats.mp.current -= 2;
-  pet.idle = () => wander(pet);
   pet.isNPC = true;
   pet.stats = {
     hp: caller.stats.hp / 4,

@@ -8,7 +8,7 @@ import { REGISTRY } from "./classes/actors/ActorRegistry.js";
 import { CANVAS } from "./classes/Canvas.js";
 import { HUD } from "./classes/UI/HUD.js";
 import { spawnEnemies } from "./classes/world/spawnEnemies.js";
-import { npcWander } from "./classes/actors/pets.js";
+import { npcWander } from "./classes/actors/npcWander.js";
 //Initialization
 const WORLD = new World(CANVAS);
 export let RENDERER = new Renderer(CANVAS.context);
@@ -17,13 +17,10 @@ PLAYER.HUD = new HUD({ x: PLAYER.x, y: PLAYER.y });
 PLAYER.statsMenu = new StatMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 PLAYER.invMenu = new InventoryMenu(CANVAS.centerX, CANVAS.centerY, CANVAS.context);
 REGISTRY.add(PLAYER);
-spawnEnemies(1);
+spawnEnemies(4);
 
 function drawPlayers(players) {
   players.forEach((p) => {
-    //if the caster is idle, keep updating pets
-    if (p.isIdle) p.pets?.forEach((pet) => pet.idle());
-
     RENDERER.drawActors(p);
     RENDERER.drawStatMenu(p.statsMenu, p.stats);
     RENDERER.drawInventoryMenu(p.invMenu, p.id);
@@ -65,13 +62,13 @@ function paint() {
   if (elapsed > fpsInterval) {
     fpsUpdate();
     CANVAS.clear();
-    RENDERER.drawScreen(WORLD.world[WORLD.currentSpaceX][WORLD.currentSpaceY]);
+    RENDERER.drawScreen(WORLD.world[WORLD.renderedSpaceX][WORLD.renderedSpaceY]);
     checkPosition(REGISTRY.listActors()[0], WORLD);
+    drawNPCs(REGISTRY.listActors().filter((a) => a.isNPC === true));
     drawPlayers(REGISTRY.listActors().filter((a) => a.isNPC === false));
     REGISTRY.listActors()
       .filter((a) => a.isNPC === true)
       .forEach((a) => npcWander(a));
-    drawNPCs(REGISTRY.listActors().filter((a) => a.isNPC === true));
   }
 }
 

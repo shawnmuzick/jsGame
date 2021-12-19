@@ -1,7 +1,6 @@
 import { summonSkeleton } from "./spells/spells.js";
 import { getSpriteSheet } from "./util.js";
 import { idleMap } from "./actionMaps.js";
-import { npcWander } from "./pets.js";
 export class Sprite {
   constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0 }) {
     this.img = img;
@@ -25,6 +24,7 @@ export class Player extends Sprite {
     this.isLiving = true;
     this.isNPC = false;
     this.inventory = [];
+    this.worldPosition = [0, 0];
     this.stats = {
       hp: { max: 0, current: 0 },
       mp: { max: 0, current: 0 },
