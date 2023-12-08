@@ -1,18 +1,18 @@
 import { Sprite } from "../actors/player.js";
-let img = new Image();
+const img = new Image();
 img.src = "./LPC_forest/forest_tiles.png";
 
-let worldSize = 9 * 100;
+const worldSize = 9 * 100;
 
 function getRandomTile(maxX, maxY, minX = 0, minY = 0) {
-  let x = Math.floor(Math.random() * (maxX - minX) + minX);
-  let y = Math.floor(Math.random() * (maxY - minY) + minY);
+  const x = Math.floor(Math.random() * (maxX - minX) + minX);
+  const y = Math.floor(Math.random() * (maxY - minY) + minY);
   let geoFeat = false;
   //if we got the empty grass tile, mark for a geographic feature
   if (!x && !y) geoFeat = true;
   if (geoFeat) {
     //it can never return true in the 3rd parameter
-    let obj = getRandomTile(7, 3, 0, 3);
+    const obj = getRandomTile(7, 3, 0, 3);
     //this particular source tile is broken, so just skip over it
     if (obj.x === 5) obj.x++;
     geoFeat = {
@@ -26,7 +26,7 @@ function getRandomTile(maxX, maxY, minX = 0, minY = 0) {
 /**Represents 1 viewable screen */
 export class Screen extends Sprite {
   constructor({ cWidth, cHeight }) {
-    let obj = { width: 32, height: 32, img: img };
+    const obj = { width: 32, height: 32, img: img };
     super(obj);
     this.scaleWidth = cWidth;
     this.scaleHeight = cHeight;
@@ -52,7 +52,7 @@ export class World {
   //create a 9x9 world of screens
   populate(obj) {
     for (let i = 0; i < 9; i++) {
-      let arr = [];
+      const arr = [];
       for (let j = 0; j < 9; j++) {
         arr.push(new Screen(obj));
       }
