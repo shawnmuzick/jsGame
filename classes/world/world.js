@@ -1,6 +1,4 @@
-import { Sprite } from "../actors/player.js";
-const img = new Image();
-img.src = "./LPC_forest/forest_tiles.png";
+import { Sprite } from "../Sprite.js";
 
 const worldSize = 9 * 100;
 
@@ -26,8 +24,9 @@ function getRandomTile(maxX, maxY, minX = 0, minY = 0) {
 /**Represents 1 viewable screen */
 export class Screen extends Sprite {
   constructor({ cWidth, cHeight }) {
-    const obj = { width: 32, height: 32, img: img };
+    const obj = { width: 32, height: 32, img: undefined };
     super(obj);
+    this.img = this.getSpriteSheet("grassTiles");
     this.scaleWidth = cWidth;
     this.scaleHeight = cHeight;
     this.grid = [[], [], [], [], [], [], [], [], []];

@@ -1,6 +1,6 @@
 import { REGISTRY } from "../actors/ActorRegistry.js";
 import { CANVAS } from "../Canvas.js";
-import { Cadaver } from "../actors/player.js";
+import { Cadaver } from "../actors/Player.js";
 import { getRandomInt } from "../actors/util.js";
 export function spawnEnemies(num = 1) {
   for (let i = 0; i < num; i++) {

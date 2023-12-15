@@ -1,4 +1,5 @@
-export class ActorRegistry {
+//Registry of actors that an actor needs to track or follow
+class ActorRegistry {
   constructor() {
     this.actors = new Map();
     this.players = new Map();
@@ -25,4 +26,5 @@ export class ActorRegistry {
   }
 }
 
-export let REGISTRY = new ActorRegistry();
+let REGISTRY = new ActorRegistry();
+export { REGISTRY, ActorRegistry };

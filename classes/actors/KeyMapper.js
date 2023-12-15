@@ -33,14 +33,14 @@ export const keymap = {
   t: (actor) => {
     // check if they're a player, not a pet
     if (actor.HUD) {
-      actor.statsMenu.open = !actor.statsMenu.open;
+      actor.statMenu.open = !actor.statMenu.open;
       //prevent walking animation while opening menu
       actor.idle();
     }
   },
   i: (actor) => {
     if (actor.HUD) {
-      actor.invMenu.open = !actor.invMenu.open;
+      actor.inventoryMenu.open = !actor.inventoryMenu.open;
       actor.idle();
     }
   },
