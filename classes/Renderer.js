@@ -59,6 +59,11 @@ function iterateActors(actors, obj) {
     //if actor is not the caller of DrawPlayer, skip, because the player can't hit themselves
     //and if the actor is not the summoner of the caller of DrawPlayer, skip, because pets shouldn't kill summoner
     if (!(actors[i] === obj) && !(obj.summoner === actors[i])) {
+      //if both actors are NPC's, don't bother processing the hit
+      //shouldn't be any friendly fire
+      if (actors[i].isNPC == true && obj.isNPC == true) {
+        return;
+      }
       //get the actor's hitbox
       const bx = actors[i].getHitBox();
       const hit = processHit(obj, bx);
@@ -181,57 +186,6 @@ export class Renderer {
             obj.scaleHeight + 2
           );
         }
-      }
-    }
-  }
-
-  drawInventoryMenu(obj, actorID) {
-    //no menu system, is an NPC
-    if (obj === undefined) return;
-    if (!obj.open) return;
-    const player = REGISTRY.getByID(actorID);
-    const startX = obj.x - obj.width / 2;
-    let startY = obj.y - obj.height / 2;
-    startY += obj.height - 100;
-    // window
-    this.context.drawImage(
-      obj.img,
-      obj.x - obj.width / 2,
-      obj.y - obj.height / 2,
-      obj.width,
-      obj.height
-    );
-    // player space
-    this.context.strokeStyle = "white";
-    this.context.beginPath();
-    this.context.rect(
-      obj.x - player.scaleWidth / 2,
-      obj.y - player.scaleHeight / 2 - 50,
-      player.scaleWidth,
-      player.scaleHeight
-    );
-    this.context.stroke();
-    // draw player image,
-    this.context.drawImage(
-      player.img,
-      0,
-      walkMap.get("down"),
-      player.width,
-      player.height,
-      obj.x - player.scaleWidth / 2,
-      obj.y - player.scaleHeight / 2 - 55,
-      player.scaleWidth,
-      player.scaleHeight
-    );
-
-    // draw the grid at the bottom
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 2; j++) {
-        // outer square
-        this.context.strokeStyle = "white";
-        this.context.beginPath();
-        this.context.rect(startX + i * 50, startY + j * 50, 50, 50);
-        this.context.stroke();
       }
     }
   }

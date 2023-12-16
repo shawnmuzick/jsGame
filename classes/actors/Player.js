@@ -24,6 +24,8 @@ export class Player extends Sprite {
     this.scaleWidth = this.width * 1.5;
     this.scaleHeight = this.height * 1.5;
     this.speed = 5;
+    this.vision = 3; // the number of spaces away the actor can see
+    this.direction = 0;
   }
 
   update(start = 0, end = 8, offset = 1) {
@@ -50,6 +52,25 @@ export class Player extends Sprite {
       yMin: this.y,
       yMax: this.y + this.height,
     };
+  }
+
+  //the range of values in the caller's visibility
+  GetVisibileWindow() {
+    return {
+      yRange: { ymax: this.y + 64 * this.vision, ymin: this.y - 64 * this.vision },
+      xRange: { xmax: this.x + 64 * this.vision, xmin: this.x - 64 * this.vision },
+    };
+  }
+
+  // is the actor's x in range && is the actor's y in range
+  CheckLineOfSight(actor) {
+    const window = this.GetVisibileWindow();
+    return (
+      actor.x < window.xRange.xmax &&
+      actor.x > window.xRange.xmin &&
+      actor.y < window.yRange.ymax &&
+      actor.y > window.yRange.ymin
+    );
   }
 }
 

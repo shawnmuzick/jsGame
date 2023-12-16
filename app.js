@@ -12,7 +12,7 @@ const WORLD = new World(CANVAS);
 export const RENDERER = new Renderer(CANVAS.context);
 const PLAYER = new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context });
 REGISTRY.add(PLAYER);
-spawnEnemies(4);
+spawnEnemies(1);
 
 function drawPlayers(players) {
   for (const p of players) {
