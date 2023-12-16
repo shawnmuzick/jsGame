@@ -12,7 +12,7 @@ const WORLD = new World(CANVAS);
 export const RENDERER = new Renderer(CANVAS.context);
 const PLAYER = new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context });
 REGISTRY.add(PLAYER);
-spawnEnemies(4);
+spawnEnemies(1);
 
 function drawPlayers(players) {
   for (const p of players) {
@@ -68,16 +68,12 @@ function paint() {
 }
 
 function keydown(e) {
-  REGISTRY.listActors()
-    .filter((a) => a.isNPC === false)
-    .forEach((player) => {
-      player.isIdle = false;
-      try {
-        KEYMAP.keys[e.key](player);
-      } catch (e) {
-        console.log(e);
-      }
-    });
+  try {
+    PLAYER.isIdle = false;
+    PLAYER.currentAction = KEYMAP.keys[e.key];
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function keyUp() {

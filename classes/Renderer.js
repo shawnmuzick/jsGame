@@ -38,6 +38,7 @@ function processHit(obj, bx) {
   ];
   //if the current attack frame was within the hitbox, register the hit
   let hit = null;
+  console.log(obj.frameY);
 
   if (obj.frameY === 21 * obj.width && cooridnate !== -1) {
     hit = getHit(bx, upFrames[cooridnate]); //if facing up
@@ -51,29 +52,25 @@ function processHit(obj, bx) {
   if (obj.frameY === 30 * obj.width && cooridnate !== -1) {
     hit = getHit(bx, rightFrames[cooridnate]); //if facing up
   }
+  console.log(hit);
   return hit;
 }
 
-function iterateActors(actors, obj) {
-  for (let i = 0; i < actors.length; i++) {
-    //if actor is not the caller of DrawPlayer, skip, because the player can't hit themselves
-    //and if the actor is not the summoner of the caller of DrawPlayer, skip, because pets shouldn't kill summoner
-    if (!(actors[i] === obj) && !(obj.summoner === actors[i])) {
-      //if both actors are NPC's, don't bother processing the hit
-      //shouldn't be any friendly fire
-      if (actors[i].isNPC == true && obj.isNPC == true) {
-        return;
-      }
-      //get the actor's hitbox
-      const bx = actors[i].getHitBox();
-      const hit = processHit(obj, bx);
-      //if the hit registered, kill the actor
-      actors[i].isLiving = !hit;
-      //if actor is dead, remove them from the list of actors
-      if (!actors[i].isLiving) {
-        console.log("HIT!!!", actors[i].id);
-        REGISTRY.remove(actors[i].id);
-      }
+export function checkHit(actor, obj) {
+  console.log(actor, obj);
+  //both actors are NPC's, don't process the hit, shouldn't be friendly fire
+  if (actor.isNPC == true && obj.isNPC == true) {
+    console.log("both npcs");
+    return;
+  }
+  //if the actor is not the summoner of the caller of DrawPlayer, skip, because pets shouldn't kill summoner
+  if (!(actor === obj) && !obj.following.has(actor.id)) {
+    const hit = obj.CheckLineOfAttack(actor);
+    //if the hit registered, kill the actor
+    actor.isLiving = !hit;
+    //if actor is dead, remove them from the list of actors
+    if (!actor.isLiving) {
+      REGISTRY.remove(actor.id);
     }
   }
 }
@@ -108,6 +105,10 @@ export class Renderer {
     if (obj.filter) {
       this.context.filter = "invert(100%)";
     }
+    if (obj.currentAction) {
+      obj.currentAction(obj);
+    }
+    obj.update(...updateParams, offset);
     this.context.drawImage(
       obj.img,
       obj.frameX,
@@ -120,7 +121,6 @@ export class Renderer {
       obj.scaleHeight * offset
     );
     if (obj.filter) this.context.filter = "invert(0%)";
-    obj.update(...updateParams, offset);
   }
 
   drawScreen(obj) {

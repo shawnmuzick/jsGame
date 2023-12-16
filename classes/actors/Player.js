@@ -26,6 +26,7 @@ export class Player extends Sprite {
     this.speed = 5;
     this.vision = 2; // the number of spaces away the actor can see
     this.direction = 0;
+    this.attackRange = 2;
   }
 
   update(start = 0, end = 8, offset = 1) {
@@ -40,6 +41,7 @@ export class Player extends Sprite {
     this.frameY = idleMap.get(this.frameY / this.height);
     this.frameX = 0;
     this.isIdle = true;
+    this.currentAction = null;
   }
 
   lvlUp() {
@@ -60,6 +62,26 @@ export class Player extends Sprite {
       yRange: { ymax: this.y + 64 * this.vision, ymin: this.y - 64 * this.vision },
       xRange: { xmax: this.x + 64 * this.vision, xmin: this.x - 64 * this.vision },
     };
+  }
+  GetAttackWindow() {
+    return {
+      yRange: { ymax: this.y + 64 * this.attackRange, ymin: this.y - 64 * this.attackRange },
+      xRange: { xmax: this.x + 64 * this.attackRange, xmin: this.x - 64 * this.attackRange },
+    };
+  }
+
+  // is the actor's x in range && is the actor's y in range
+  CheckLineOfAttack(actor) {
+    const window = this.GetAttackWindow();
+    console.log(this.frameY / this.width);
+    console.log(this.frameX / this.width);
+    return (
+      actor.x < window.xRange.xmax &&
+      actor.x > window.xRange.xmin &&
+      actor.y < window.yRange.ymax &&
+      actor.y > window.yRange.ymin &&
+      this.frameX / this.width > 2
+    );
   }
 
   // is the actor's x in range && is the actor's y in range

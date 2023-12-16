@@ -2,6 +2,7 @@ import { getRandomInt } from "./util.js";
 import { swordMap } from "./actionMaps.js";
 import { KEYMAP } from "./KeyMapper.js";
 import { REGISTRY } from "./ActorRegistry.js";
+import { checkHit } from "../Renderer.js";
 
 const directions = [0, 1, 2, 3];
 
@@ -75,6 +76,7 @@ export function npcWander(caller) {
     //if they're in x axis line of sight, attack
     if (caller.CheckLineOfSight(actor) && !caller.following.has(actor.id)) {
       direction = 4;
+      checkHit(actor, caller);
       //otherwise roll to change what we're doing, if yes, get a new action, otherwise keep the current one
     } else {
       direction = getRandomDirection(caller);
