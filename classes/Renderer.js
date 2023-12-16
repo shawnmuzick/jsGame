@@ -82,7 +82,7 @@ export class Renderer {
     this.context = context;
   }
 
-  drawActors(obj, filter) {
+  drawActors(obj) {
     let offset = 1;
     const updateParams = [0];
     let scaleX = 0;
@@ -95,13 +95,8 @@ export class Renderer {
       updateParams.push(5);
       // clean frameX from a previous action sequence
       if (obj.frameX % 3 !== 0) obj.frameX = 0;
-      // only hit check on players for now
-      if (obj.HUD) {
-        //iterate over the actors
-        iterateActors(REGISTRY.listActors(), obj);
-      }
       // if we're idle
-    } else if (obj.isIdle) {
+    } else if (obj.isIdle === true) {
       updateParams.push(0);
       // if we have spells and are casting
     } else if (Array.from(spellMap.values()).includes(obj.frameY)) {
@@ -126,32 +121,6 @@ export class Renderer {
     );
     if (obj.filter) this.context.filter = "invert(0%)";
     obj.update(...updateParams, offset);
-  }
-
-  drawHUD(obj, params) {
-    //no hud, is an NPC
-    if (obj === undefined) return;
-    const { hpMax, hpCurrent, mpMax, mpCurrent } = params;
-    // draw the dash area
-    obj.drawConsole(this.context);
-    const arr = [
-      [mpMax, mpMax],
-      [mpMax, mpCurrent],
-      [hpMax, hpMax],
-      [hpMax, hpCurrent],
-    ];
-    // loop through the orbs and drawn them out
-    for (let i = 0; i < obj.orbs.length; i++) {
-      obj.drawOrb(
-        this.context,
-        arr[i][0],
-        arr[i][1],
-        obj.orbs[i].x,
-        obj.orbs[i].y,
-        obj.orbs[i].color,
-        obj.orbs[i].alpha
-      );
-    }
   }
 
   drawScreen(obj) {

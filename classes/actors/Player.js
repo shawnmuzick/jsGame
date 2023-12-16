@@ -15,7 +15,7 @@ export class Player extends Sprite {
     this.following = new ActorRegistry();
     this.inventory = new PlayerInventory();
     this.stats = new PlayerStats();
-    this.HUD = new HUD({ x: this.x, y: this.y });
+    this.HUD = new HUD({ x: this.x, y: this.y, context: this.context });
     this.spell = summonSkeleton;
     this.isIdle = true;
     this.isLiving = true;
@@ -24,7 +24,7 @@ export class Player extends Sprite {
     this.scaleWidth = this.width * 1.5;
     this.scaleHeight = this.height * 1.5;
     this.speed = 5;
-    this.vision = 3; // the number of spaces away the actor can see
+    this.vision = 2; // the number of spaces away the actor can see
     this.direction = 0;
   }
 

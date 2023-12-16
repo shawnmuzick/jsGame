@@ -1,5 +1,5 @@
 class Sprite {
-  constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0 }) {
+  constructor({ img, frameX = 0, frameY = 10, width = 64, height = 64, x = 0, y = 0, context }) {
     this.id = crypto.randomUUID();
     this.img = img;
     this.frameX = frameX;
@@ -8,6 +8,7 @@ class Sprite {
     this.height = height;
     this.x = x;
     this.y = y;
+    this.context = context;
   }
   getSpriteSheet(name) {
     const sprites = {

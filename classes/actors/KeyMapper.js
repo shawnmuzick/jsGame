@@ -3,18 +3,22 @@ export const keymap = {
   ArrowUp: (actor) => {
     actor.frameY = walkMap.get("up");
     actor.y -= actor.speed;
+    actor.update();
   },
   ArrowDown: (actor) => {
     actor.frameY = walkMap.get("down");
     actor.y += actor.speed;
+    actor.update();
   },
   ArrowLeft: (actor) => {
     actor.frameY = walkMap.get("left");
     actor.x -= actor.speed;
+    actor.update();
   },
   ArrowRight: (actor) => {
     actor.frameY = walkMap.get("right");
     actor.x += actor.speed;
+    actor.update();
   },
   " ": (actor) => {
     if (walkMap.has(actor.frameY)) {

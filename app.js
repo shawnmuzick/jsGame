@@ -12,14 +12,14 @@ const WORLD = new World(CANVAS);
 export const RENDERER = new Renderer(CANVAS.context);
 const PLAYER = new Necromancer({ x: CANVAS.centerX, y: CANVAS.centerY, context: CANVAS.context });
 REGISTRY.add(PLAYER);
-spawnEnemies(1);
+spawnEnemies(4);
 
 function drawPlayers(players) {
   for (const p of players) {
     RENDERER.drawActors(p);
     p.statMenu?.draw(p);
     p.inventoryMenu?.draw(p.id);
-    RENDERER.drawHUD(p.HUD, {
+    p.HUD?.drawHUD({
       hpMax: p.stats.hp.max,
       hpCurrent: p.stats.hp.current,
       mpMax: p.stats.mp.max,
@@ -81,11 +81,7 @@ function keydown(e) {
 }
 
 function keyUp() {
-  REGISTRY.listActors()
-    .filter((a) => a.isNPC === false)
-    .forEach((p) => {
-      p.idle();
-    });
+  PLAYER.idle();
 }
 
 document.addEventListener("keydown", (e) => keydown(e));
